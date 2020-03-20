@@ -1,43 +1,17 @@
 package go_union_payment
 
-import "sync"
-
-type (
-	UnionPaymentGateway = string
-	UnionPaymentChannel = string
-)
-
-const (
-	Version = "1.0.0.b1"
-
-	// gateways
-	AlipayGateway UnionPaymentGateway = "Alipay"
-	CmbGateway    UnionPaymentGateway = "CMBank"
-	WechatGateway UnionPaymentGateway = "Wechat"
-	QpayGateway   UnionPaymentGateway = "Qpay"
-
-	// wx
-	WxChannelApp UnionPaymentChannel = "wx_app"
-	WxChannelPub UnionPaymentChannel = "wx_pub"
-	WxChannelQr  UnionPaymentChannel = "wx_qr"
-	WxChannelBar UnionPaymentChannel = "wx_bar"
-
-	// ali
-	Ali
-
-	// paypal
-
-	// cmb
+import (
+	"fmt"
+	"github.com/bennya8/go-union-payment/contracts"
+	"github.com/bennya8/go-union-payment/gateways/wechat"
+	"github.com/bennya8/go-union-payment/payloads"
+	"sync"
 )
 
 var (
 	instance *UnionPayment
 	once     sync.Once
 )
-
-type IPayNotifiable interface {
-	PayNotify(gateway UnionPaymentGateway, channel UnionPaymentChannel, notifyData string)
-}
 
 func NewUnionPayment() *UnionPayment {
 	once.Do(func() {
@@ -46,8 +20,29 @@ func NewUnionPayment() *UnionPayment {
 	return instance
 }
 
-type IUnionPayment interface {
-	Pay()
-}
 type UnionPayment struct {
+}
+
+func (u *UnionPayment) Pay(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) *payloads.UnionPaymentResult {
+	gateway := u.gatewayFactory(channel, config)
+	fmt.Println(gateway)
+
+	// @todo
+	return payloads.NewUnionPaymentResult(false, "developing", nil)
+}
+
+func (u *UnionPayment) ParserNotify(notify contracts.IPaymentNotify) {
+	//notify.PayNotify()
+}
+
+func (u *UnionPayment) gatewayFactory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
+	if channel == payloads.WxChannelApp ||
+		channel == payloads.WxChannelBar ||
+		channel == payloads.WxChannelPub ||
+		channel == payloads.WxChannelQr {
+
+		return wechat.Factory(channel, config)
+	}
+
+	return &wechat.WapCharge{Base: nil}
 }

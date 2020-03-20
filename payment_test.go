@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/bennya8/go-union-payment/gateways/wechat"
+	"github.com/bennya8/go-union-payment/payloads"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,6 +22,8 @@ func TestWechatPayment(t *testing.T) {
 	config, err := wechat.NewConfigWithJson([]byte(rawJson))
 	fmt.Println(err)
 	fmt.Println(config)
+
+	NewUnionPayment().Pay(payloads.WxChannelApp, config)
 }
 
 func TestCaClient(t *testing.T) {

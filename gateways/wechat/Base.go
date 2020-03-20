@@ -1,17 +1,34 @@
 package wechat
 
 import (
-	"fmt"
+	"crypto/tls"
+	"crypto/x509"
+	"github.com/bennya8/go-union-payment/certs"
+	"github.com/bennya8/go-union-payment/contracts"
+	"github.com/bennya8/go-union-payment/payloads"
 	"github.com/bennya8/go-union-payment/utils/str"
-	"github.com/gojektech/heimdall/httpclient"
 	"io/ioutil"
-	"time"
+	"log"
+	"net/http"
+	"strings"
 )
 
 const NonceLen = 32
 const ReqSuccess = "SUCCESS"
 const SignTypeMd5 = "MD5"
 const SignTypeSha = "HMAC-SHA256"
+
+func Factory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
+	cfg := config.ParseConfig().(Config)
+	b := NewBase(cfg)
+
+	switch channel {
+	case payloads.WxChannelWap:
+		return &WapCharge{Base: b}
+
+	}
+	return nil
+}
 
 type Base struct {
 	GatewayUrl string
@@ -22,47 +39,62 @@ type Base struct {
 	NonceStr   string
 	UseBackup  bool
 	SignType   string
+	Http       http.Client
+	Config     Config
 }
 
 func NewBase(config Config) *Base {
-	base := &Base{}
-	base.IsSandbox = config.UseSandbox
-	base.UseBackup = config.UseBackup
-	base.ReturnRaw = config.ReturnRaw
-	base.MerKey = config.Md5Key
-	base.SignType = config.SignType
-	base.NonceStr = str.GetNonce(NonceLen)
+	b := &Base{}
+	b.Config = config
+
+	// @todo the following params could be remove lately.
+	b.IsSandbox = config.UseSandbox
+	b.UseBackup = config.UseBackup
+	b.ReturnRaw = config.ReturnRaw
+	b.MerKey = config.Md5Key
+	b.SignType = config.SignType
+	b.NonceStr = str.GetNonce(NonceLen)
 
 	// initial wechat gateway address
-	base.GatewayUrl = "https://api.mch.weixin.qq.com/%s"
-	if base.IsSandbox {
-		base.GatewayUrl = "https://api.mch.weixin.qq.com/sandboxnew/%s"
-	} else if base.UseBackup {
-		base.GatewayUrl = "https://api2.mch.weixin.qq.com/%s"
+	b.GatewayUrl = "https://api.mch.weixin.qq.com/%s"
+	if b.IsSandbox {
+		b.GatewayUrl = "https://api.mch.weixin.qq.com/sandboxnew/%s"
+	} else if b.UseBackup {
+		b.GatewayUrl = "https://api2.mch.weixin.qq.com/%s"
 	}
 
 	// if using sandbox env then switch the merchant key
-	if base.IsSandbox && len(base.SandboxKey) == 0 {
-		base.SandboxKey = base.getSignKey()
-		base.MerKey = base.SandboxKey
+	if b.IsSandbox && len(b.SandboxKey) == 0 {
+		b.SandboxKey = b.getSignKey()
+		b.MerKey = b.SandboxKey
 	}
 
-	return base
+	b.initialHttpClient()
+
+	return b
 }
 
-func (*Base) RequestWxApi()  {
-	timeout := 1000 * time.Millisecond
-	client := httpclient.NewClient(httpclient.WithHTTPTimeout(timeout))
-
-	// Use the clients GET method to create and execute the request
-	res, err := client.Get("http://google.com", nil)
-	if err != nil{
-		panic(err)
+func (b *Base) initialHttpClient() {
+	// load the ca pem via. binary
+	reader := strings.NewReader(certs.WxCaCertPem())
+	caCert, err := ioutil.ReadAll(reader)
+	if err != nil {
+		log.Fatal(err)
 	}
+	pool := x509.NewCertPool()
+	pool.AppendCertsFromPEM(caCert)
 
-	// Heimdall returns the standard *http.Response object
-	body, err := ioutil.ReadAll(res.Body)
-	fmt.Println(string(body))
+	clientCert, err := tls.LoadX509KeyPair(b.Config.AppCertPem, b.Config.AppKeyPem)
+	tlsConfig := tls.Config{
+		RootCAs:      pool,
+		Certificates: []tls.Certificate{clientCert},
+	}
+	transport := http.Transport{
+		TLSClientConfig: &tlsConfig,
+	}
+	b.Http = http.Client{
+		Transport: &transport,
+	}
 }
 
 func (*Base) getSignKey() string {
@@ -78,5 +110,3 @@ func (*Base) buildParams() {
 func (*Base) changeKeyName() {
 
 }
-
-

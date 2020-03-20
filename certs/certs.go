@@ -1,4 +1,7 @@
-##
+package certs
+
+func WxCaCertPem() string {
+	return `##
 ## Bundle of CA Root Certificates
 ##
 ## Certificate data from Mozilla as of: Wed Mar  7 04:12:06 2018 GMT
@@ -3336,3 +3339,5 @@ BBYEFFvKXuXe0oGqzagtZFG22XKbl+ZPMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUW8pe
 N+vp1RPZytRrJPOwPYdGWBrssd9v+1a6cGvHOMzosYxPD/fxZ3YOg9AeUY8CMD32IygmTMZgh5Mm
 m7I1HrrW9zzRHM76JTymGoEVW/MSD2zuZYrJh6j5B+BimoxcSg==
 -----END CERTIFICATE-----
+`
+}
