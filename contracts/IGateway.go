@@ -2,13 +2,12 @@ package contracts
 
 import (
 	"encoding/xml"
+	"github.com/bennya8/go-union-payment/payloads"
 	"io"
 )
 
 type IGateway interface {
-	Request()
-	Response()
-	BuildParams() map[string]string
+	Request() *payloads.UnionPaymentResult
 }
 
 type xmlMapEntry struct {

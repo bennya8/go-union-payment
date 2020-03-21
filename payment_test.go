@@ -23,7 +23,7 @@ func TestWechatPayment(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(config)
 
-	NewUnionPayment().Pay(payloads.WxChannelApp, config)
+	NewUnionPayment().Pay(payloads.WxChannelWap, config)
 }
 
 func TestCaClient(t *testing.T) {

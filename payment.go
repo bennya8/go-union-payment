@@ -1,7 +1,6 @@
 package go_union_payment
 
 import (
-	"fmt"
 	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/gateways/wechat"
 	"github.com/bennya8/go-union-payment/payloads"
@@ -25,10 +24,8 @@ type UnionPayment struct {
 
 func (u *UnionPayment) Pay(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) *payloads.UnionPaymentResult {
 	gateway := u.gatewayFactory(channel, config)
-	fmt.Println(gateway)
 
-	// @todo
-	return payloads.NewUnionPaymentResult(false, "developing", nil)
+	return gateway.Request()
 }
 
 func (u *UnionPayment) ParserNotify(notify contracts.IPaymentNotify) {
@@ -37,6 +34,7 @@ func (u *UnionPayment) ParserNotify(notify contracts.IPaymentNotify) {
 
 func (u *UnionPayment) gatewayFactory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
 	if channel == payloads.WxChannelApp ||
+		channel == payloads.WxChannelWap ||
 		channel == payloads.WxChannelBar ||
 		channel == payloads.WxChannelPub ||
 		channel == payloads.WxChannelQr {
@@ -44,5 +42,5 @@ func (u *UnionPayment) gatewayFactory(channel payloads.UnionPaymentChannel, conf
 		return wechat.Factory(channel, config)
 	}
 
-	return &wechat.WapCharge{Base: nil}
+	panic("unknown gateway")
 }

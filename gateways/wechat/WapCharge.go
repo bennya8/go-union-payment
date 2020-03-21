@@ -1,6 +1,9 @@
 package wechat
 
-import "github.com/bennya8/go-union-payment/contracts"
+import (
+	"fmt"
+	"github.com/bennya8/go-union-payment/payloads"
+)
 
 const WapChargeMethod = "pay/unifiedorder"
 
@@ -8,17 +11,20 @@ type WapCharge struct {
 	Base *Base
 }
 
-func (w WapCharge) Request() {
-
+func (w WapCharge) Request() *payloads.UnionPaymentResult {
+	uri := w.Base.GetFullGatewayUrl(WapChargeMethod)
 	params := w.BuildParams()
-	xmlParams := contracts.XmlParams(params)
+	resp, err := w.Base.Request(uri, params)
+	if err != nil {
+		return payloads.NewUnionPaymentResult(false, fmt.Sprintf("%s", err), nil)
+	}
 
 
-	w.Base.Request()
-}
+	fmt.Println(resp, err)
 
-func (w WapCharge) Response() {
-	panic("implement me")
+	// decode xml
+
+	return payloads.NewUnionPaymentResult(true, "", nil)
 }
 
 func (w WapCharge) BuildParams() map[string]string {
@@ -30,8 +36,6 @@ func (w WapCharge) BuildParams() map[string]string {
 		"nonce_str":  w.Base.NonceStr,
 		"sign_type":  w.Base.SignType,
 	}
-
-
 
 	return ret
 }

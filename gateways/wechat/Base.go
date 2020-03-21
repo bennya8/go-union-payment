@@ -1,8 +1,11 @@
 package wechat
 
 import (
+	"bytes"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/xml"
+	"fmt"
 	"github.com/bennya8/go-union-payment/certs"
 	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/payloads"
@@ -24,6 +27,7 @@ const SignTypeSha = "HMAC-SHA256"
 func Factory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
 	cfg := config.ParseConfig().(Config)
 	b := NewBase(cfg)
+	fmt.Println(b)
 
 	switch channel {
 	case payloads.WxChannelWap:
@@ -77,7 +81,11 @@ func NewBase(config Config) *Base {
 	return b
 }
 
-func (b *Base) Request(uri string, params map[string]string) (*http.Response, error) {
+func (b *Base) GetFullGatewayUrl(method string) string {
+	return fmt.Sprintf(b.GatewayUrl, method)
+}
+
+func (b *Base) Request(uri string, params map[string]string) (map[string]string, error) {
 	// strips all empty values
 	for k, v := range params {
 		if len(v) <= 0 {
@@ -104,7 +112,21 @@ func (b *Base) Request(uri string, params map[string]string) (*http.Response, er
 
 	params["sign"] = b.makeSign(signStr)
 
-	return b.Http.Post(uri, "application/xml", contentBody)
+	x, _ := xml.MarshalIndent(contracts.XmlParams(params), "", "  ")
+	contentBody := bytes.NewBuffer(x)
+	resp, err := b.Http.Post(uri, "application/xml", contentBody)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret map[string]string
+	err = xml.Unmarshal(body, (*contracts.XmlParams)(&ret))
+	return ret, nil
 }
 
 func (b *Base) initHttp() {
