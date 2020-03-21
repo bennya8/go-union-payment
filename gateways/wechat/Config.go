@@ -10,7 +10,8 @@ type Config struct {
 	AppId      string `json:"app_id"`
 	SubAppId   string `json:"sub_app_id"`
 	SubMchId   string `json:"sub_mch_id"`
-	Md5Key     string `json:"md_5_key"`
+	MchId      string `json:"mch_id"`
+	Md5Key     string `json:"md5_key"`
 	//CaPem       string   `json:"ca_pem"` // @todo using the build-in wx-ca.pem temporary, see certs.go -> WxCaCertPem() method
 	AppCertPem  string   `json:"app_cert_pem"`
 	AppKeyPem   string   `json:"app_key_pem"`
@@ -20,7 +21,6 @@ type Config struct {
 	ReturnRaw   bool     `json:"return_raw"`
 	NotifyUrl   string   `json:"notify_url"`
 	RedirectUrl string   `json:"redirect_url"`
-
 }
 
 func (c Config) ParseConfig() interface{} {

@@ -6,10 +6,13 @@ import (
 	"github.com/bennya8/go-union-payment/certs"
 	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/payloads"
+	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/str"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"sort"
 	"strings"
 )
 
@@ -69,12 +72,42 @@ func NewBase(config Config) *Base {
 		b.MerKey = b.SandboxKey
 	}
 
-	b.initialHttpClient()
+	b.initHttp()
 
 	return b
 }
 
-func (b *Base) initialHttpClient() {
+func (b *Base) Request(uri string, params map[string]string) (*http.Response, error) {
+	// strips all empty values
+	for k, v := range params {
+		if len(v) <= 0 {
+			delete(params, k)
+		}
+	}
+
+	// sort params by keys
+	var keys []string
+	for k := range params {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	// build signature
+	var signStr string
+	for _, k := range keys {
+		v, _ := url.QueryUnescape(params[k])
+		signStr += k + "=" + v + "&"
+	}
+	if strings.LastIndex(signStr, "&") != -1 {
+		signStr = signStr[:len(signStr)-1]
+	}
+
+	params["sign"] = b.makeSign(signStr)
+
+	return b.Http.Post(uri, "application/xml", contentBody)
+}
+
+func (b *Base) initHttp() {
 	// load the ca pem via. binary
 	reader := strings.NewReader(certs.WxCaCertPem())
 	caCert, err := ioutil.ReadAll(reader)
@@ -99,14 +132,29 @@ func (b *Base) initialHttpClient() {
 
 func (*Base) getSignKey() string {
 	//method := "pay/getsignkey"
-	// @todo request wx api
+	// @todo request wx api is require when fetch the signature key with sanbox env.
 	return ""
 }
 
-func (*Base) buildParams() {
-
+func (b *Base) makeSign(signStr string) string {
+	var sign string
+	if b.SignType == SignTypeMd5 {
+		signStr += "&key=" + b.MerKey
+		sign = crypt.MD5(signStr)
+	} else if b.SignType == SignTypeSha {
+		signStr += "&key=" + b.MerKey
+		sign = crypt.HmacSha1(signStr, b.MerKey)
+	}
+	return sign
 }
 
-func (*Base) changeKeyName() {
-
-}
+//func (*Base) modifiedParams(params map[string]interface{}) {
+//	modKeys := map[string]bool{
+//		"mmpaymkttransfers/promotion/transfers": true,
+//		"mmpaymkttransfers/sendredpack":         true,
+//	}
+//	if _, ok := params[modKeys] {
+//
+//	}
+//
+//}

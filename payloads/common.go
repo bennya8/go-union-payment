@@ -1,8 +1,8 @@
 package payloads
 
 type (
-	UnionPaymentGateway = string
-	UnionPaymentChannel = string
+	UnionPaymentGateway string
+	UnionPaymentChannel string
 )
 
 const (
