@@ -15,16 +15,7 @@ func (w WapCharge) Request() *payloads.UnionPaymentResult {
 	uri := w.Base.GetFullGatewayUrl(WapChargeMethod)
 	params := w.BuildParams()
 	resp, err := w.Base.Request(uri, params)
-	if err != nil {
-		return payloads.NewUnionPaymentResult(false, fmt.Sprintf("%s", err), nil)
-	}
-
-
-	fmt.Println(resp, err)
-
-	// decode xml
-
-	return payloads.NewUnionPaymentResult(true, "", nil)
+	return payloads.NewUnionPaymentResult(err != nil, fmt.Sprintf("%s", err), resp)
 }
 
 func (w WapCharge) BuildParams() map[string]string {

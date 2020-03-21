@@ -29,13 +29,19 @@ const (
 	// cmb
 )
 
+type IGatewayResponse interface {
+	ToMap() (map[string]interface{}, error)
+	ToJson() (string, error)
+	ToXml() (string, error)
+}
+
 type UnionPaymentResult struct {
 	State bool
 	Msg   string
-	Data  interface{}
+	Data  IGatewayResponse
 }
 
-func NewUnionPaymentResult(state bool, msg string, data interface{}) *UnionPaymentResult {
+func NewUnionPaymentResult(state bool, msg string, data IGatewayResponse) *UnionPaymentResult {
 	return &UnionPaymentResult{
 		State: state,
 		Msg:   msg,

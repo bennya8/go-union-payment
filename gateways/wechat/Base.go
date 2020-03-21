@@ -85,7 +85,7 @@ func (b *Base) GetFullGatewayUrl(method string) string {
 	return fmt.Sprintf(b.GatewayUrl, method)
 }
 
-func (b *Base) Request(uri string, params map[string]string) (map[string]string, error) {
+func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, error) {
 	// strips all empty values
 	for k, v := range params {
 		if len(v) <= 0 {
@@ -123,10 +123,7 @@ func (b *Base) Request(uri string, params map[string]string) (map[string]string,
 	if err != nil {
 		return nil, err
 	}
-
-	var ret map[string]string
-	err = xml.Unmarshal(body, (*contracts.XmlParams)(&ret))
-	return ret, nil
+	return NewBaseResponse(string(body)), nil
 }
 
 func (b *Base) initHttp() {
