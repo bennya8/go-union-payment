@@ -9,7 +9,7 @@ Payment is a Go version of the payment aggregation third-party SDK, which integr
 
 Inspired by [https://github.com/helei112g/payment] which is a php-version of unified payment lib.
 
-**PR** is always weclome!
+**PR** is always Welcome!
 
 **payment support list**
 
