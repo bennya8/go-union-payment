@@ -14,12 +14,6 @@ Inspired by [https://github.com/helei112g/payment] which is a php-version of uni
 **payment support list**
 
 - Wechat [Working]
-    - pay/unifiedorder -> [WxPayApp,]
-    - secapi/pay/reverse
-    - pay/closeorder
-    - pay/downloadbill
-
-
 - Alipay [TODO]
 - Qpay [TODO]
 - China Merchant Bank [TODO]
