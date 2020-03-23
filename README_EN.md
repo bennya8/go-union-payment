@@ -23,7 +23,7 @@ Inspired by [https://github.com/helei112g/payment] which is a php-version of uni
 
 ### Installation
 
-> go get https://github.com/bennya8/go-union-payment
+> go get github.com/bennya8/go-union-payment
 
 ### Usage
 

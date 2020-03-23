@@ -25,7 +25,7 @@ UnionPayment 是一个整合各种第三方支付网关的工具, 计划支持 W
 
 ### 安装方式
 
-> go get https://github.com/bennya8/go-union-payment
+> go get github.com/bennya8/go-union-payment
 
 ### 使用说明
 
