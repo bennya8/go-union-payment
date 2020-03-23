@@ -10,12 +10,8 @@ import (
 	"net/http"
 )
 
-var (
-	instance *UnionPayment
-)
-
 func NewUnionPayment(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) *UnionPayment {
-	instance = &UnionPayment{}
+	instance := &UnionPayment{}
 	instance.Gateway = instance.gatewayFactory(gateway, config)
 	return instance
 }
