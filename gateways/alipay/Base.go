@@ -1,24 +1,15 @@
 package alipay
 
 import (
-	"fmt"
-	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/payloads"
 )
 
-func Factory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
-	cfg := config.ParseConfig().(Config)
-	b := NewBase(cfg)
-	fmt.Println(b)
+type Gateway struct {
+	Base *Base
+}
 
-	switch channel {
-	case payloads.AliChannelApp:
-	case payloads.AliChannelWap:
-	case payloads.AliChannelWeb:
-	case payloads.AliChannelQr:
-	case payloads.AliChannelBar:
-	}
-	return nil
+func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
+	panic("implement me")
 }
 
 type Base struct {

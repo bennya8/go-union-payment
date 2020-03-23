@@ -5,20 +5,20 @@ import (
 	"github.com/bennya8/go-union-payment/payloads"
 )
 
-const WapChargeMethod = "pay/unifiedorder"
-
-type WapCharge struct {
+type PayLite struct {
 	Base *Base
 }
 
-func (w WapCharge) Request() *payloads.UnionPaymentResult {
-	uri := w.Base.GetFullGatewayUrl(WapChargeMethod)
-	params := w.BuildParams()
-	resp, err := w.Base.Request(uri, params)
+func (w PayLite) Request(params map[string]string) *payloads.UnionPaymentResult {
+	uri := w.Base.GetFullGatewayUrl("pay/unifiedorder")
+
+	//api
+
+	resp, err := w.Base.Request(uri, w.BuildParams(params))
 	return payloads.NewUnionPaymentResult(err != nil, fmt.Sprintf("%s", err), resp)
 }
 
-func (w WapCharge) BuildParams() map[string]string {
+func (w PayLite) BuildParams(params map[string]string) map[string]string {
 	ret := map[string]string{
 		"app_id":     w.Base.Config.AppId,
 		"sub_appid":  w.Base.Config.SubAppId,
@@ -27,6 +27,8 @@ func (w WapCharge) BuildParams() map[string]string {
 		"nonce_str":  w.Base.NonceStr,
 		"sign_type":  w.Base.SignType,
 	}
-
+	for k, v := range params {
+		ret[k] = v
+	}
 	return ret
 }

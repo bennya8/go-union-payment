@@ -7,7 +7,12 @@ import (
 )
 
 type IGateway interface {
-	Request() *payloads.UnionPaymentResult
+	Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult
+}
+
+type IGatewayRequest interface {
+	Request(params map[string]string) *payloads.UnionPaymentResult
+	BuildParams(params map[string]string) map[string]string
 }
 
 type xmlMapEntry struct {

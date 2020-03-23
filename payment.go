@@ -8,62 +8,39 @@ import (
 	"github.com/bennya8/go-union-payment/gateways/wechat"
 	"github.com/bennya8/go-union-payment/payloads"
 	"net/http"
-	"sync"
 )
 
 var (
 	instance *UnionPayment
-	once     sync.Once
 )
 
-func NewUnionPayment() *UnionPayment {
-	once.Do(func() {
-		instance = &UnionPayment{}
-	})
+func NewUnionPayment(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) *UnionPayment {
+	instance = &UnionPayment{}
+	instance.Gateway = instance.gatewayFactory(gateway, config)
 	return instance
 }
 
 type UnionPayment struct {
+	Gateway contracts.IGateway
 }
 
-func (u *UnionPayment) Invoke(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) *payloads.UnionPaymentResult {
-	gateway := u.gatewayFactory(channel, config)
-
-	return gateway.Request()
+func (u *UnionPayment) Invoke(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
+	return u.Gateway.Request(api, params)
 }
 
 func (u *UnionPayment) ParserNotify(req *http.Response, notify contracts.IPaymentNotify) {
 	//notify.PayNotify()
 }
 
-func (u *UnionPayment) gatewayFactory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
-	if channel == payloads.WxChannelApp ||
-		channel == payloads.WxChannelWap ||
-		channel == payloads.WxChannelBar ||
-		channel == payloads.WxChannelPub ||
-		channel == payloads.WxChannelQr {
-
-		return wechat.Factory(channel, config)
-	} else if channel == payloads.AliChannelApp ||
-		channel == payloads.AliChannelWap ||
-		channel == payloads.AliChannelWeb ||
-		channel == payloads.AliChannelQr ||
-		channel == payloads.AliChannelBar {
-
-		return alipay.Factory(channel, config)
-	} else if channel == payloads.QpayChannelApp ||
-		channel == payloads.QpayChannelWap ||
-		channel == payloads.QpayChannelQr {
-
-		return qpay.Factory(channel, config)
-	} else if channel == payloads.CmbChannelApp ||
-		channel == payloads.CmbChannelWap ||
-		channel == payloads.CmbChannelWeb ||
-		channel == payloads.CmbChannelQr ||
-		channel == payloads.CmbChannelLite {
-
-		return cmb.Factory(channel, config)
+func (u *UnionPayment) gatewayFactory(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) contracts.IGateway {
+	if gateway == payloads.WechatGateway {
+		return &wechat.Gateway{Base: wechat.NewBase(config.(wechat.Config))}
+	} else if gateway == payloads.AlipayGateway {
+		return &alipay.Gateway{Base: alipay.NewBase(config.(alipay.Config))}
+	} else if gateway == payloads.QpayGateway {
+		return &qpay.Gateway{Base: qpay.NewBase(config.(qpay.Config))}
+	} else if gateway == payloads.CmbGateway {
+		return &cmb.Gateway{Base: cmb.NewBase(config.(cmb.Config))}
 	}
-
 	panic("unknown gateway")
 }

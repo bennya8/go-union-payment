@@ -3,6 +3,7 @@ package payloads
 type (
 	UnionPaymentGateway string
 	UnionPaymentChannel string
+	UnionPaymentApi     string
 )
 
 const (
@@ -14,25 +15,29 @@ const (
 	WechatGateway                     = "Wechat"
 	QpayGateway                       = "Qpay"
 
-	// channels
-	WxChannelWap   UnionPaymentChannel = "wx_wap"
-	WxChannelApp                       = "wx_app"
-	WxChannelPub                       = "wx_pub"
-	WxChannelQr                        = "wx_qr"
-	WxChannelBar                       = "wx_bar"
-	AliChannelApp                      = "ali_app"
-	AliChannelWap                      = "ali_wap"
-	AliChannelWeb                      = "ali_web"
-	AliChannelQr                       = "ali_qr"
-	AliChannelBar                      = "ali_bar"
-	QpayChannelWap                     = "qpay_wap"
-	QpayChannelApp                     = "qpay_app"
-	QpayChannelQr                      = "qpay_qr"
-	CmbChannelApp                      = "cmb_app"
-	CmbChannelWap                      = "cmb_wap"
-	CmbChannelWeb                      = "cmb_web"
-	CmbChannelQr                       = "cmb_qr"
-	CmbChannelLite                     = "cmb_lite"
+	// wx apis
+	WxApiPayApp         UnionPaymentApi = "wx_api_pay_app"
+	WxApiPayWap                         = "wx_api_pay_wap"
+	WxApiPayPub                         = "wx_api_pay_pub"
+	WxApiPayLite                        = "wx_api_pay_lite"
+	WxApiPayQr                          = "wx_api_pay_qr"
+	WxApiPayBar                         = "wx_api_pay_bar"
+	WxApiCancelTrade                    = "wx_api_cancel_trade"
+	WxApiCloseTrade                     = "wx_api_close_trade"
+	WxApiQueryTrade                     = "wx_api_query_trader"
+	WxApiRefund                         = "wx_api_refund"
+	WxApiQueryRefund                    = "wx_api_query_refund"
+	WxApiTransfer                       = "wx_api_transfer"
+	WxApiQueryTransfer                  = "wx_api_query_transfer"
+	WxApiBillDownload                   = "wx_api_bill_download"
+	WxApiSettleDownload                 = "wx_api_settle_download"
+
+	// alipay apis
+	AliApiPayApp UnionPaymentApi = "ali_api_pay_app"
+	AliApiPayWap                 = "ali_api_pay_wap"
+
+	// qpay apis
+
 )
 
 type IGatewayResponse interface {

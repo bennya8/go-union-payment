@@ -1,24 +1,15 @@
 package cmb
 
 import (
-	"fmt"
-	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/payloads"
 )
 
-func Factory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
-	cfg := config.ParseConfig().(Config)
-	b := NewBase(cfg)
-	fmt.Println(b)
+type Gateway struct {
+	Base *Base
+}
 
-	switch channel {
-	case payloads.CmbChannelApp:
-	case payloads.CmbChannelWap:
-	case payloads.CmbChannelWeb:
-	case payloads.CmbChannelQr:
-	case payloads.CmbChannelLite:
-	}
-	return nil
+func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
+	panic("implement me")
 }
 
 type Base struct {

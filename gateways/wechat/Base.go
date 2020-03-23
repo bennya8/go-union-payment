@@ -20,19 +20,35 @@ import (
 )
 
 const NonceLen = 32
-const ReqSuccess = "SUCCESS"
 const SignTypeMd5 = "MD5"
 const SignTypeSha = "HMAC-SHA256"
 
-func Factory(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) contracts.IGateway {
-	cfg := config.ParseConfig().(Config)
-	b := NewBase(cfg)
-	fmt.Println(b)
+type Gateway struct {
+	Base *Base
+}
 
-	switch channel {
-	case payloads.WxChannelWap:
-		return &WapCharge{Base: b}
-
+func (w *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
+	switch api {
+	case payloads.WxApiPayApp:
+		return (&PayApp{Base: w.Base}).Request(params)
+	case payloads.WxApiPayWap:
+		return (&PayWap{Base: w.Base}).Request(params)
+	case payloads.WxApiPayPub:
+		return (&PayPub{Base: w.Base}).Request(params)
+	case payloads.WxApiPayLite:
+		return (&PayLite{Base: w.Base}).Request(params)
+	case payloads.WxApiPayQr:
+		return (&PayQr{Base: w.Base}).Request(params)
+	case payloads.WxApiPayBar:
+		return (&PayBar{Base: w.Base}).Request(params)
+	case payloads.WxApiCancelTrade:
+	case payloads.WxApiCloseTrade:
+	case payloads.WxApiQueryTrade:
+	case payloads.WxApiQueryRefund:
+	case payloads.WxApiTransfer:
+	case payloads.WxApiQueryTransfer:
+	case payloads.WxApiBillDownload:
+	case payloads.WxApiSettleDownload:
 	}
 	return nil
 }
