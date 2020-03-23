@@ -176,3 +176,8 @@ You can find all the unit test in the examples folder.
 #### 3rd dependencies
 
 No extental libs requirement yet.
+
+
+# LICENSE
+
+MIT
