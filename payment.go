@@ -28,7 +28,7 @@ func (u *UnionPayment) Invoke(api payloads.UnionPaymentApi, params map[string]st
 	return u.Gateway.Request(api, params)
 }
 
-func (u *UnionPayment) ParserNotify(req *http.Response, notify contracts.IPaymentNotify) {
+func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPaymentNotify) {
 	//notify.PayNotify()
 }
 
