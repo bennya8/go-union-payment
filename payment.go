@@ -2,8 +2,12 @@ package go_union_payment
 
 import (
 	"github.com/bennya8/go-union-payment/contracts"
+	"github.com/bennya8/go-union-payment/gateways/alipay"
+	"github.com/bennya8/go-union-payment/gateways/cmb"
+	"github.com/bennya8/go-union-payment/gateways/qpay"
 	"github.com/bennya8/go-union-payment/gateways/wechat"
 	"github.com/bennya8/go-union-payment/payloads"
+	"net/http"
 	"sync"
 )
 
@@ -28,7 +32,7 @@ func (u *UnionPayment) Pay(channel payloads.UnionPaymentChannel, config contract
 	return gateway.Request()
 }
 
-func (u *UnionPayment) ParserNotify(notify contracts.IPaymentNotify) {
+func (u *UnionPayment) ParserNotify(req *http.Response, notify contracts.IPaymentNotify) {
 	//notify.PayNotify()
 }
 
@@ -40,6 +44,25 @@ func (u *UnionPayment) gatewayFactory(channel payloads.UnionPaymentChannel, conf
 		channel == payloads.WxChannelQr {
 
 		return wechat.Factory(channel, config)
+	} else if channel == payloads.AliChannelApp ||
+		channel == payloads.AliChannelWap ||
+		channel == payloads.AliChannelWeb ||
+		channel == payloads.AliChannelQr ||
+		channel == payloads.AliChannelBar {
+
+		return alipay.Factory(channel, config)
+	} else if channel == payloads.QpayChannelApp ||
+		channel == payloads.QpayChannelWap ||
+		channel == payloads.QpayChannelQr {
+
+		return qpay.Factory(channel, config)
+	} else if channel == payloads.CmbChannelApp ||
+		channel == payloads.CmbChannelWap ||
+		channel == payloads.CmbChannelWeb ||
+		channel == payloads.CmbChannelQr ||
+		channel == payloads.CmbChannelLite {
+
+		return cmb.Factory(channel, config)
 	}
 
 	panic("unknown gateway")

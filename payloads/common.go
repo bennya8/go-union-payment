@@ -10,23 +10,29 @@ const (
 
 	// gateways
 	AlipayGateway UnionPaymentGateway = "Alipay"
-	CmbGateway    UnionPaymentGateway = "CMBank"
-	WechatGateway UnionPaymentGateway = "Wechat"
-	QpayGateway   UnionPaymentGateway = "Qpay"
+	CmbGateway                        = "CMBank"
+	WechatGateway                     = "Wechat"
+	QpayGateway                       = "Qpay"
 
-	// wx
-	WxChannelWap UnionPaymentChannel = "wx_wap"
-	WxChannelApp UnionPaymentChannel = "wx_app"
-	WxChannelPub UnionPaymentChannel = "wx_pub"
-	WxChannelQr  UnionPaymentChannel = "wx_qr"
-	WxChannelBar UnionPaymentChannel = "wx_bar"
-
-	// ali
-	Ali
-
-	// paypal
-
-	// cmb
+	// channels
+	WxChannelWap   UnionPaymentChannel = "wx_wap"
+	WxChannelApp                       = "wx_app"
+	WxChannelPub                       = "wx_pub"
+	WxChannelQr                        = "wx_qr"
+	WxChannelBar                       = "wx_bar"
+	AliChannelApp                      = "ali_app"
+	AliChannelWap                      = "ali_wap"
+	AliChannelWeb                      = "ali_web"
+	AliChannelQr                       = "ali_qr"
+	AliChannelBar                      = "ali_bar"
+	QpayChannelWap                     = "qpay_wap"
+	QpayChannelApp                     = "qpay_app"
+	QpayChannelQr                      = "qpay_qr"
+	CmbChannelApp                      = "cmb_app"
+	CmbChannelWap                      = "cmb_wap"
+	CmbChannelWeb                      = "cmb_web"
+	CmbChannelQr                       = "cmb_qr"
+	CmbChannelLite                     = "cmb_lite"
 )
 
 type IGatewayResponse interface {
