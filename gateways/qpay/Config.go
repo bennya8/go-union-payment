@@ -1,6 +1,9 @@
 package qpay
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"gopkg.in/yaml.v2"
+)
 
 type Config struct {
 	UseSandbox      bool   `json:"use_sandbox"`
@@ -19,9 +22,18 @@ func (c Config) ParseConfig() interface{} {
 	return c
 }
 
-func NewConfigWithJson(rawJson []byte) (*Config, error) {
+func NewConfigWithJson(content []byte) (*Config, error) {
 	var config Config
-	err := json.Unmarshal(rawJson, &config)
+	err := json.Unmarshal(content, &config)
+	if err != nil {
+		return nil, err
+	}
+	return &config, nil
+}
+
+func NewConfigWithYaml(content []byte) (*Config, error) {
+	var config Config
+	err := yaml.Unmarshal(content, &config)
 	if err != nil {
 		return nil, err
 	}

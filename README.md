@@ -46,20 +46,20 @@ if err != nil {
 }
 ```
 
-**b) yaml **
+**b) yaml**
 
 ```golang
-configJson, err: = ioutil.ReadFile("./config.json")
+configYaml, err: = ioutil.ReadFile("./config.yaml")
 if err != nil {
     t.Error(err)
 }
-wechatConfig, err: = wechat.NewConfigWithYaml(configJson)
+wechatConfig, err: = wechat.NewConfigWithYaml(configYaml)
 if err != nil {
     t.Error(err)
 }
 ```
 
-**c) struct **
+**c) struct**
 
 ```golang
 wechatConfig: = wechat.Config {
@@ -180,7 +180,7 @@ http.HandleFunc("/your_notify_url", func(w http.ResponseWriter, r *http.Request)
 
 #### 第三方依赖包
 
-暂无
+- gopkg.in/yaml.v2
 
 # LICENSE
 

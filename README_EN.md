@@ -44,20 +44,20 @@ if err != nil {
 }
 ```
 
-**b) yaml **
+**b) yaml**
 
 ```golang
-configJson, err: = ioutil.ReadFile("./config.json")
+configYaml, err: = ioutil.ReadFile("./config.yaml")
 if err != nil {
     t.Error(err)
 }
-wechatConfig, err: = wechat.NewConfigWithYaml(configJson)
+wechatConfig, err: = wechat.NewConfigWithYaml(configYaml)
 if err != nil {
     t.Error(err)
 }
 ```
 
-**c) struct **
+**c) struct**
 
 ```golang
 wechatConfig: = wechat.Config {
@@ -179,8 +179,7 @@ You can find all the unit test in the examples folder.
 
 #### 3rd dependencies
 
-No extental libs requirement yet.
-
+- gopkg.in/yaml.v2
 
 # LICENSE
 
