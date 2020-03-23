@@ -7,7 +7,7 @@ English | [中文](/README.md)
 
 Payment is a Go version of the payment aggregation third-party SDK, which integrates WeChat, Alipay, Qpay, China Merchant Bank payment and maybe more. 
 
-Inspired by https://github.com/helei112g/payment which is a php-version of unified payment lib.
+Inspired by [https://github.com/helei112g/payment] which is a php-version of unified payment lib.
 
 **PR** is always weclome!
 
