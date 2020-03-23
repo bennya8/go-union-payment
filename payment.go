@@ -26,7 +26,7 @@ func NewUnionPayment() *UnionPayment {
 type UnionPayment struct {
 }
 
-func (u *UnionPayment) Pay(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) *payloads.UnionPaymentResult {
+func (u *UnionPayment) Invoke(channel payloads.UnionPaymentChannel, config contracts.IGatewayConfig) *payloads.UnionPaymentResult {
 	gateway := u.gatewayFactory(channel, config)
 
 	return gateway.Request()

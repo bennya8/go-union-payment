@@ -1,0 +1,13 @@
+{
+  "use_sandbox": false,
+  "use_backup": false,
+  "app_id": "<app_id>",
+  "sub_app_id": "<sub_app_id>",
+  "sub_mch_id": "<sub_mch_id>",
+  "mch_id": "<mch_id>",
+  "md5_key": "<md5_key>",
+  "app_cert_pem": "<app_cert_pem>",
+  "app_key_pem": "<app_key_pem>",
+  "sign_type": "<sign_type>",
+  "limit_pay": []
+}
