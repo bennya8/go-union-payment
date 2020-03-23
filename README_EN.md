@@ -155,7 +155,7 @@ func (c *PaymentController) Callback(ctx iris.Context) mvc.Result {
 }
 ```
 
-**Build-in net.http Server - http.Request **
+**Build-in net.http Server - http.Request**
 
 ```golang
 http.HandleFunc("/your_notify_url", func(w http.ResponseWriter, r *http.Request) {        
