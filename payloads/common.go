@@ -2,7 +2,6 @@ package payloads
 
 type (
 	UnionPaymentGateway string
-	UnionPaymentChannel string
 	UnionPaymentApi     string
 )
 
@@ -35,6 +34,8 @@ const (
 	// alipay apis
 	AliApiPayApp UnionPaymentApi = "ali_api_pay_app"
 	AliApiPayWap                 = "ali_api_pay_wap"
+	AliApiPayBar                 = "ali_api_pay_bar"
+	AliApiPayWeb                 = "ali_api_pay_web"
 
 	// qpay apis
 

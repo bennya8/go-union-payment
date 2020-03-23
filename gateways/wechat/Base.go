@@ -50,7 +50,7 @@ func (w *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string
 	case payloads.WxApiBillDownload:
 	case payloads.WxApiSettleDownload:
 	}
-	return nil
+	return payloads.NewUnionPaymentResult(false, "unknown gateway api", nil)
 }
 
 type Base struct {

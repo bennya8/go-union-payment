@@ -51,3 +51,24 @@ func TestAliApiPayApp(t *testing.T) {
 	x, e := result.Data.ToXml()
 	fmt.Println(x, e)
 }
+
+type AliPaymentService struct {
+
+}
+
+func (a *AliPaymentService) PayNotify(gateway payloads.UnionPaymentGateway, notifyData string) {
+	if gateway == payloads.AlipayGateway {
+		// @todo parse notifyData
+		// and maybe change the order status
+	}
+}
+
+func TestNotify(t *testing.T) {
+
+	service := &AliPaymentService{}
+
+	payment := go_union_payment.NewUnionPayment(payloads.AlipayGateway, nil)
+	payment.ParserNotify(nil,service)
+
+
+}
