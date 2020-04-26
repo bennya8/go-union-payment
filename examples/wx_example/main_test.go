@@ -84,11 +84,12 @@ func TestWxPayPub(t *testing.T) {
 		"amount":       "0.01",
 		"return_param": "123",
 		"client_ip":    "127.0.0.1",
-		"scene_info":   `{"h5_info":{"type":"Wap","wap_url":"https:\/\/Leo112g.github.io\/","wap_name":"\u6d4b\u8bd5\u5145\u503c"}}`,
+		"scene_info":   `{"h5_info":{"type":"Wap","wap_url":"http://yourhost","wap_name":"your host name"}}`,
+		"openid":       "okJMV0hE8EmcyoSBcDIuEBTIGNg8",
 	})
 	if !rs.State {
 		panic(rs.Msg)
 	}
 
-	fmt.Println(rs.Data)
+	fmt.Println(rs.Data.ToJson())
 }

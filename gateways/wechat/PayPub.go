@@ -61,7 +61,7 @@ func (w PayPub) BuildParams(params map[string]string) map[string]string {
 		receiptStr = "Y"
 	}
 
-	var sceneInfo map[string]interface{}
+	var sceneInfo interface{}
 	_ = json.Unmarshal([]byte(params["scene_info"]), &sceneInfo)
 
 	storeInfo := map[string]interface{}{
