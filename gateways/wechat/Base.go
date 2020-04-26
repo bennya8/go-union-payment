@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"github.com/bennya8/go-union-payment/certs"
 	"github.com/bennya8/go-union-payment/contracts"
@@ -152,6 +153,10 @@ func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, err
 	if err != nil {
 		return nil, err
 	}
+	if strings.Contains(string(body), "<return_code><![CDATA[FAIL]]></return_code>") {
+		return nil, errors.New(string(body))
+	}
+
 	return NewBaseResponse(string(body)), nil
 }
 

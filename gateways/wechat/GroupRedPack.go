@@ -21,7 +21,7 @@ func (w GroupRedPack) Request(params map[string]string) *payloads.UnionPaymentRe
 	//api
 
 	resp, err := w.Base.Request(uri, w.BuildParams(params))
-	return payloads.NewUnionPaymentResult(err != nil, fmt.Sprintf("%s", err), resp)
+	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 
 func (w GroupRedPack) BuildParams(params map[string]string) map[string]string {

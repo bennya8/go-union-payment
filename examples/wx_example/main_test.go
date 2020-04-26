@@ -7,7 +7,9 @@ import (
 	"github.com/bennya8/go-union-payment/gateways/wechat"
 	"github.com/bennya8/go-union-payment/payloads"
 	"io/ioutil"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func initWxConfig() contracts.IGatewayConfig {
@@ -20,6 +22,10 @@ func initWxConfig() contracts.IGatewayConfig {
 		panic(err)
 	}
 	return wxConfig
+}
+
+func getTradeNo() string {
+	return time.Now().String()
 }
 
 func TestWxConfigWithYaml(t *testing.T) {
@@ -48,6 +54,21 @@ func TestWxConfigWithJson(t *testing.T) {
 
 func TestWxPayApp(t *testing.T) {
 	config := initWxConfig()
+
 	payment := go_union_payment.NewUnionPayment(payloads.WechatGateway, config)
-	fmt.Println(payment)
+	rs := payment.Invoke(payloads.WxApiPayWap, map[string]string{
+		"body":         "test body",
+		"subject":      "test subject",
+		"trade_no":     getTradeNo(),
+		"time_expire":  strconv.Itoa(int(time.Now().Add(600 * time.Second).Unix())),
+		"amount":       "0.01",
+		"return_param": "123",
+		"client_ip":    "127.0.0.1",
+		"scene_info":   `{"type":"Wap","wap_url": "http://xxxxxxxx","wap_name": "测试支付"}`,
+	})
+	if !rs.State {
+		panic(rs.Msg)
+	}
+
+	fmt.Println(rs.Data)
 }

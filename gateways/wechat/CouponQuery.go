@@ -21,7 +21,7 @@ func (w CouponQuery) Request(params map[string]string) *payloads.UnionPaymentRes
 	//api
 
 	resp, err := w.Base.Request(uri, w.BuildParams(params))
-	return payloads.NewUnionPaymentResult(err != nil, fmt.Sprintf("%s", err), resp)
+	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 
 func (w CouponQuery) BuildParams(params map[string]string) map[string]string {
