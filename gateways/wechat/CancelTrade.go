@@ -27,7 +27,7 @@ func (w CancelTrade) Request(params map[string]string) *payloads.UnionPaymentRes
 func (w CancelTrade) BuildParams(params map[string]string) map[string]string {
 	ret := map[string]string{
 		"transaction_id": params["transaction_id"],
-		"out_trade_no":   params["out_trade_no"],
+		"out_trade_no":   params["trade_no"],
 	}
 	for k, v := range params {
 		ret[k] = v

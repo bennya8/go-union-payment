@@ -64,6 +64,14 @@ func TestWxPayWap(t *testing.T) {
 		"amount":       "0.01",
 		"return_param": "123",
 		"client_ip":    "127.0.0.1",
+
+		//IOS移动应用
+		//{"h5_info": {"type":"IOS","app_name": "王者荣耀","bundle_id": "com.tencent.wzryIOS"}}
+		//安卓移动应用
+		//{"h5_info": {"type":"Android","app_name": "王者荣耀","package_name": "com.tencent.tmgp.sgame"}}
+		//WAP网站应用
+		//{"h5_info": {"type":"Wap","wap_url": "https://pay.qq.com","wap_name": "腾讯充值"}}
+		"scene_info":   `{"type":"Wap","wap_url":"http://yourhost","wap_name":"your host name"}`,
 	})
 	if !rs.State {
 		panic(rs.Msg)
@@ -84,8 +92,10 @@ func TestWxPayPub(t *testing.T) {
 		"amount":       "0.01",
 		"return_param": "123",
 		"client_ip":    "127.0.0.1",
-		"scene_info":   `{"h5_info":{"type":"Wap","wap_url":"http://yourhost","wap_name":"your host name"}}`,
 		"openid":       "okJMV0hE8EmcyoSBcDIuEBTIGNg8",
+
+		//{"store_info" : {"id": "SZTX001", "name": "腾大餐厅", "area_code": "440305", "address": "科技园中一路腾讯大厦" }}
+		"scene_info":   "",
 	})
 	if !rs.State {
 		panic(rs.Msg)

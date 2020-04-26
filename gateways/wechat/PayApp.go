@@ -72,7 +72,7 @@ func (w PayApp) BuildParams(params map[string]string) map[string]string {
 		"body":             params["subject"],
 		"detail":           params["body"],
 		"attach":           params["return_param"],
-		"out_trade_no":     params["out_trade_no"],
+		"out_trade_no":     params["trade_no"],
 		"fee_type":         feeType,
 		"total_fee":        fmt.Sprintf("%f", totalFee),
 		"spbill_create_ip": params["client_ip"],
