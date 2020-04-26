@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"github.com/bennya8/go-union-payment/certs"
-	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/payloads"
 	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/str"
@@ -105,7 +103,7 @@ func (b *Base) GetFullGatewayUrl(method string) string {
 func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, error) {
 	// setting up base request params.
 	baseParams := map[string]string{
-		"app_id":     b.Config.AppId,
+		"appid":      b.Config.AppId,
 		"sub_appid":  b.Config.SubAppId,
 		"mch_id":     b.Config.MchId,
 		"sub_mch_id": b.Config.SubMchId,
@@ -132,18 +130,25 @@ func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, err
 
 	// build signature
 	var signStr string
+
+	// build xml
+	x := "<xml>"
 	for _, k := range keys {
 		v, _ := url.QueryUnescape(params[k])
 		signStr += k + "=" + v + "&"
+		x += "<" + k + "><![CDATA[" + v + "]]></" + k + ">"
 	}
+	// strip last &
 	if strings.LastIndex(signStr, "&") != -1 {
 		signStr = signStr[:len(signStr)-1]
 	}
 
-	params["sign"] = b.makeSign(signStr)
+	// append signature
+	sign := b.makeSign(signStr)
+	x += "<sign><![CDATA[" + sign + "]]></sign>"
+	x += "</xml>"
 
-	x, _ := xml.MarshalIndent(contracts.XmlParams(params), "", "  ")
-	contentBody := bytes.NewBuffer(x)
+	contentBody := bytes.NewBufferString(x)
 	resp, err := b.Http.Post(uri, "application/xml", contentBody)
 	if err != nil {
 		return nil, err
@@ -199,6 +204,15 @@ func (b *Base) makeSign(signStr string) string {
 		sign = crypt.HmacSha1(signStr, b.MerKey)
 	}
 	return sign
+}
+
+func (b *Base) ToXml(params map[string]string) string {
+	x := "<xml>"
+	for k, v := range params {
+		x += "<" + k + "><![CDATA[" + v + "]]></" + k + ">"
+	}
+	x += "</xml>"
+	return x
 }
 
 //func (*Base) modifiedParams(params map[string]interface{}) {

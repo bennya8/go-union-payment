@@ -42,7 +42,7 @@ func (w PayPub) BuildParams(params map[string]string) map[string]string {
 	if err != nil {
 		panic("union.payment.error:" + err.Error())
 	}
-	totalFee := amount * 100
+	totalFee := int(amount * 100)
 
 	timeStart := date.TimeFormat(time.Now(), "YYYYMMDDhhiiss")
 	timeExpire := date.TimeFormat(time.Now().Add(30*time.Minute), "YYYYMMDDhhiiss")
@@ -61,7 +61,7 @@ func (w PayPub) BuildParams(params map[string]string) map[string]string {
 		receiptStr = "Y"
 	}
 
-	var sceneInfo interface{}
+	var sceneInfo map[string]interface{}
 	_ = json.Unmarshal([]byte(params["scene_info"]), &sceneInfo)
 
 	storeInfo := map[string]interface{}{
@@ -74,9 +74,9 @@ func (w PayPub) BuildParams(params map[string]string) map[string]string {
 		"body":             params["subject"],
 		"detail":           params["body"],
 		"attach":           params["return_param"],
-		"out_trade_no":     params["out_trade_no"],
+		"out_trade_no":     params["trade_no"],
 		"fee_type":         feeType,
-		"total_fee":        fmt.Sprintf("%f", totalFee),
+		"total_fee":        fmt.Sprintf("%d", totalFee),
 		"spbill_create_ip": params["client_ip"],
 		"time_start":       timeStart,
 		"time_expire":      timeExpire,
