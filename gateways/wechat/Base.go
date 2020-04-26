@@ -102,6 +102,19 @@ func (b *Base) GetFullGatewayUrl(method string) string {
 }
 
 func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, error) {
+	// setting up base request params.
+	baseParams := map[string]string{
+		"app_id":     b.Config.AppId,
+		"sub_appid":  b.Config.SubAppId,
+		"mch_id":     b.Config.MchId,
+		"sub_mch_id": b.Config.SubMchId,
+		"nonce_str":  b.NonceStr,
+		"sign_type":  b.SignType,
+	}
+	for k, v := range baseParams {
+		params[k] = v
+	}
+
 	// strips all empty values
 	for k, v := range params {
 		if len(v) <= 0 {
