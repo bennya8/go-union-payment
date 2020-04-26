@@ -3,15 +3,23 @@ package wx_example
 import (
 	"fmt"
 	go_union_payment "github.com/bennya8/go-union-payment"
+	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/gateways/wechat"
+	"github.com/bennya8/go-union-payment/payloads"
 	"io/ioutil"
 	"testing"
 )
 
-var wxUnionPayment *go_union_payment.UnionPayment
-
-func init() {
-	//wxUnionPayment = go_union_payment.NewUnionPayment(payloads.WechatGateway, )
+func initWxConfig() contracts.IGatewayConfig {
+	config, err := ioutil.ReadFile("./config.local.json")
+	if err != nil {
+		panic(err)
+	}
+	wxConfig, err := wechat.NewConfigWithJson(config)
+	if err != nil {
+		panic(err)
+	}
+	return wxConfig
 }
 
 func TestWxConfigWithYaml(t *testing.T) {
@@ -38,8 +46,8 @@ func TestWxConfigWithJson(t *testing.T) {
 	fmt.Println(wxConfig)
 }
 
-func TestWxApiWap(t *testing.T) {
-
-	a := fmt.Sprintf("%.2f", 11.1812312)
-	fmt.Println(a)
+func TestWxPayApp(t *testing.T) {
+	config := initWxConfig()
+	payment := go_union_payment.NewUnionPayment(payloads.WechatGateway, config)
+	fmt.Println(payment)
 }

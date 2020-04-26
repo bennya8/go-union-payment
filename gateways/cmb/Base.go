@@ -13,10 +13,10 @@ func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string
 }
 
 type Base struct {
-	Config Config
+	Config *Config
 }
 
-func NewBase(config Config) *Base {
+func NewBase(config *Config) *Base {
 	b := &Base{}
 	b.Config = config
 

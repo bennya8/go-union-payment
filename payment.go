@@ -30,13 +30,13 @@ func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPayment
 
 func (u *UnionPayment) gatewayFactory(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) contracts.IGateway {
 	if gateway == payloads.WechatGateway {
-		return &wechat.Gateway{Base: wechat.NewBase(config.(wechat.Config))}
+		return &wechat.Gateway{Base: wechat.NewBase(config.(*wechat.Config))}
 	} else if gateway == payloads.AlipayGateway {
-		return &alipay.Gateway{Base: alipay.NewBase(config.(alipay.Config))}
+		return &alipay.Gateway{Base: alipay.NewBase(config.(*alipay.Config))}
 	} else if gateway == payloads.QpayGateway {
-		return &qpay.Gateway{Base: qpay.NewBase(config.(qpay.Config))}
+		return &qpay.Gateway{Base: qpay.NewBase(config.(*qpay.Config))}
 	} else if gateway == payloads.CmbGateway {
-		return &cmb.Gateway{Base: cmb.NewBase(config.(cmb.Config))}
+		return &cmb.Gateway{Base: cmb.NewBase(config.(*cmb.Config))}
 	}
 	panic("unknown gateway")
 }

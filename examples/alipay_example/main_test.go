@@ -3,7 +3,8 @@ package alipay_example
 import (
 	"fmt"
 	go_union_payment "github.com/bennya8/go-union-payment"
-	"github.com/bennya8/go-union-payment/gateways/wechat"
+	"github.com/bennya8/go-union-payment/contracts"
+	"github.com/bennya8/go-union-payment/gateways/alipay"
 	"github.com/bennya8/go-union-payment/payloads"
 	"io/ioutil"
 	"math/rand"
@@ -12,18 +13,47 @@ import (
 	"time"
 )
 
-func TestAliApiPayApp(t *testing.T) {
-	configJson, err := ioutil.ReadFile("./config.json")
+func initAliConfig() contracts.IGatewayConfig {
+	configJson, err := ioutil.ReadFile("./config.local.json")
+	if err != nil {
+		panic(err)
+	}
+	config, err := alipay.NewConfigWithJson(configJson)
+	if err != nil {
+		panic(err)
+	}
+	return config
+}
+
+func TestCmbConfigWithYaml(t *testing.T) {
+	config, err := ioutil.ReadFile("./config.yaml")
 	if err != nil {
 		t.Error(err)
 	}
-	aliConfig, err := wechat.NewConfigWithJson(configJson)
+	aliConfig, err := alipay.NewConfigWithYaml(config)
 	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(aliConfig)
+}
+
+func TestCmbConfigWithJson(t *testing.T) {
+	config, err := ioutil.ReadFile("./config.json")
+	if err != nil {
+		t.Error(err)
+	}
+	aliConfig, err := alipay.NewConfigWithJson(config)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(aliConfig)
+}
+
+func TestAlipayPayApp(t *testing.T) {
+	config := initAliConfig()
 
 	// instance of go-union-payment
-	payment := go_union_payment.NewUnionPayment(payloads.AlipayGateway, aliConfig)
+	payment := go_union_payment.NewUnionPayment(payloads.AlipayGateway,config)
 
 	// call the gateway channel api
 	payData := map[string]string{
@@ -53,7 +83,6 @@ func TestAliApiPayApp(t *testing.T) {
 }
 
 type AliPaymentService struct {
-
 }
 
 func (a *AliPaymentService) PayNotify(gateway payloads.UnionPaymentGateway, notifyData string) {
@@ -68,7 +97,6 @@ func TestNotify(t *testing.T) {
 	service := &AliPaymentService{}
 
 	payment := go_union_payment.NewUnionPayment(payloads.AlipayGateway, nil)
-	payment.ParserNotify(nil,service)
-
+	payment.ParserNotify(nil, service)
 
 }

@@ -63,10 +63,10 @@ type Base struct {
 	UseBackup  bool
 	SignType   string
 	Http       http.Client
-	Config     Config
+	Config     *Config
 }
 
-func NewBase(config Config) *Base {
+func NewBase(config *Config) *Base {
 	b := &Base{}
 	b.Config = config
 

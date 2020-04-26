@@ -1,1 +1,14 @@
-{}
+{
+  "use_sandbox": false,
+  "branch_no": "<branch_no>",
+  "mch_id": "<mch_id>",
+  "mer_key": "<mer_key>",
+  "cmb_pub_key": "<cmb_pub_key>",
+  "op_pwd": "<op_pwd>",
+  "sign_type": "SHA-256",
+  "limit_pay": "",
+  "notify_url": "",
+  "sign_notify_url": "",
+  "sign_return_url": "",
+  "return_url": "return_url"
+}

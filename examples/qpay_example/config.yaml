@@ -1,0 +1,10 @@
+---
+use_sandbox: false
+return_raw: false
+app_id: "<app_id>"
+app_key: "<app_key>"
+mch_id: "<mch_id>"
+md5_key: "<md5_key>"
+fee_type: CNY
+notify_url: ''
+redirect_url: ''

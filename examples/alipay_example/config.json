@@ -1,6 +1,5 @@
 {
   "use_sandbox": false,
-  "partner": "<partner>",
   "app_id": "<app_id>",
   "sign_type": "RSA2",
   "ali_public_key": "<ali_public_key>",
@@ -8,5 +7,5 @@
   "limit_pay": [],
   "notify_url": "<notify_url>",
   "return_url": "<return_url>",
-  "return_raw": false
+  "fee_type": "CNY"
 }

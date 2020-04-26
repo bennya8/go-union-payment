@@ -1,0 +1,10 @@
+---
+use_sandbox: false
+app_id: "<app_id>"
+sign_type: RSA2
+ali_public_key: "<ali_public_key>"
+rsa_private_key: "<rsa_private_key>"
+limit_pay: []
+notify_url: "<notify_url>"
+return_url: "<return_url>"
+fee_type: CNY
