@@ -54,6 +54,32 @@ UnionPayment 是一个整合各种第三方支付网关的工具, 计划支持 W
 | WxApiProfitSharingReturnQuery | 🕓 | 回退结果查询 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_8&index=8 | 
 | WxNotifyProfitSharing | 🕓 | 分账动账通知 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_9&index=9 | 
 
+#### 支付宝 API
+
+| API | 完成状态 | 官网文档地址 |
+| --- | --- | --- |
+| AliApiPayApp | 🕓 | |
+| AliApiPayWap | 🕓 | |
+| AliApiPayBar | 🕓 | |
+| AliApiPayWeb | 🕓 | |
+
+#### QQ钱包 API
+
+| API | 完成状态 | 官网文档地址 |
+| --- | --- | --- |
+| QpayApiPayApp | 🕓 | |
+| QpayApiPayPub | 🕓 | |
+| QpayApiPayQr | 🕓 | |
+| QpayApiPayBar | 🕓 | |
+
+#### 招商银行 API
+
+@todo
+
+#### PalPal API
+
+@todo
+
 ---
 
 ### 安装方式
