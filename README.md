@@ -13,13 +13,46 @@ UnionPayment 是一个整合各种第三方支付网关的工具, 计划支持 W
 
 欢迎提PR申请一起参与开发
 
-**支付网关支持列表**
+#### 支付网关 支持列表
 
 - Wechat（微信支付） [开发中]
 - Alipay [计划开发]
 - Qpay [计划开发]
 - China Merchant Bank [计划开发]
 - Palpal [计划开发]
+
+#### 微信支付 API
+
+| API | 完成状态 | 官网文档地址 |
+| --- | --- | --- |
+| WxApiPayApp | ✅ | 统一下单-APP支付 https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1 |
+| WxApiPayWap | ✅ | 统一下单-WAP支付 https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1 | 
+| WxApiPayPub | ✅ | 统一下单-公众号支付 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1 |
+| WxApiPayLite | ✅ | 统一下单-小程序 https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1 |
+| WxApiPayQr | ✅ | 统一下单-QR https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1 |
+| WxApiPayBar | ✅ | 统一下单-NATIVE https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1 |
+| WxApiCloseTrade | 🕓 | 关闭订单 (App\Wap\Lite\Qr\Bar） https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3 |
+| WxApiQueryTrade | 🕓 | 查询订单 (App\Wap\Lite\Qr\Bar） https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2 | 
+| WxApiCancelTrade | 🕓 | 撤销订单（Bar）https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_11&index=3 |
+| WxApiRefund | 🕓 | 申请退款 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4 |
+| WxApiQueryRefund | 🕓 | 查询退款 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_5 |
+| WxApiBillDownload | 🕓 | 下载交易账单 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6 |
+| WxApiFundDownload | 🕓 | 下载资金账单 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_18&index=7 |
+| WxNotifyPay | 🕓 | 支付结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8 | 
+| WxNotifyRefund | 🕓 | 退款结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=10 |
+| WxApiTransfer | 🕓 | 企业付款 零钱 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2 |
+| WxApiQueryTransfer | 🕓 | 查询企业付款 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3 | 
+| WxApiTransferBank | 🕓 | 企业付款 银行卡 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_2 | 
+| WxApiQueryTransferBank | 🕓 | 查询企业付款 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_3 | 
+| WxApiProfitSharing | 🕓 | 请求单次分账 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_1&index=1 | 
+| WxApiMultiProfitSharing | 🕓 | 请求多次分账 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_6&index=2 |  
+| WxApiProfitSharingQuery | 🕓 | 查询分账结果 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_2&index=3 | 
+| WxApiProfitSharingAddReceiver | 🕓 | 添加分账接收方 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_3&index=4 |   
+| WxApiProfitSharingRemoveReceiver | 🕓 | 删除分账接收方 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_4&index=5 |
+| WxApiProfitSharingFinish | 🕓 | 完结分账 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_5&index=6 | 
+| WxApiProfitSharingReturn | 🕓 | 分账回退 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_7&index=7 | 
+| WxApiProfitSharingReturnQuery | 🕓 | 回退结果查询 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_8&index=8 | 
+| WxNotifyProfitSharing | 🕓 | 分账动账通知 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_9&index=9 | 
 
 ---
 
