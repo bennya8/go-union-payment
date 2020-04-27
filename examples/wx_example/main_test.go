@@ -52,6 +52,30 @@ func TestWxConfigWithJson(t *testing.T) {
 	fmt.Println(wxConfig)
 }
 
+func TestWxPayLite(t *testing.T) {
+	config := initWxConfig()
+
+	payment := go_union_payment.NewUnionPayment(payloads.WechatGateway, config)
+	rs := payment.Invoke(payloads.WxApiPayLite, map[string]string{
+		"body":         "test body",
+		"subject":      "test subject",
+		"trade_no":     getTradeNo(),
+		"time_expire":  strconv.Itoa(int(time.Now().Add(600 * time.Second).Unix())),
+		"amount":       "0.01",
+		"return_param": "123",
+		"client_ip":    "127.0.0.1",
+		"openid":       "okJMV0hE8EmcyoSBcDIuEBTIGNg8",
+
+		//{"store_info" : {"id": "SZTX001", "name": "腾大餐厅", "area_code": "440305", "address": "科技园中一路腾讯大厦" }}
+		"scene_info":   "",
+	})
+	if !rs.State {
+		panic(rs.Msg)
+	}
+
+	fmt.Println(rs.Data.ToJson())
+}
+
 func TestWxPayWap(t *testing.T) {
 	config := initWxConfig()
 
