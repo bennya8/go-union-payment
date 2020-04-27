@@ -47,7 +47,7 @@ func (w *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string
 	case payloads.WxApiTransfer:
 	case payloads.WxApiQueryTransfer:
 	case payloads.WxApiBillDownload:
-	case payloads.WxApiSettleDownload:
+	case payloads.WxApiFundDownload:
 	}
 	return payloads.NewUnionPaymentResult(false, "unknown gateway api", nil)
 }
