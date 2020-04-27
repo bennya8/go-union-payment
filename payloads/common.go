@@ -52,18 +52,25 @@ const (
 	WxApiProfitSharingReturn         = "wx_api_profit_sharing_return"          // 分账回退 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_7&index=7
 	WxApiProfitSharingReturnQuery    = "wx_api_profit_sharing_return_query"    // 回退结果查询 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_8&index=8
 
-	// 支付宝 API
+	// 支付宝 - API
 	AliApiPayApp = "ali_api_pay_app" // app支付接口2.0 https://opendocs.alipay.com/apis/api_1/alipay.trade.app.pay
 	AliApiPayWap = "ali_api_pay_wap" // 手机网站支付接口2.0 https://opendocs.alipay.com/apis/api_1/alipay.trade.wap.pay
 	AliApiPayWeb = "ali_api_pay_web" // PC网站支付接口 https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay
 	AliApiPayBar = "ali_api_pay_bar" // 统一收单交易支付接口 https://opendocs.alipay.com/apis/api_1/alipay.trade.pay
 	AliApiPayQr  = "ali_api_pay_qr"  // 统一收单线下交易预创建 https://opendocs.alipay.com/apis/api_1/alipay.trade.precreate
 
-	// QQ钱包 API
+	// QQ钱包 - API
 	QpayApiPayApp = "qpay_api_pay_app" // 统一下单-App支付 https://qpay.qq.com/buss/wiki/38/1203
 	QpayApiPayPub = "qpay_api_pay_pub" // 统一下单-公众号支付 https://qpay.qq.com/buss/wiki/38/1203
 	QpayApiPayQr  = "qpay_api_pay_qr"  // 统一下单-扫码支付 https://qpay.qq.com/buss/wiki/38/1203
 	QpayApiPayBar = "qpay_api_pay_bar" // 付款码支付 https://qpay.qq.com/buss/wiki/1/1122
+
+	// 招商银行 - API
+	CmbApiPayApp  = "cmb_api_pay_app"  // 招行 APP
+	CmbApiPayWap  = "cmb_api_pay_wap"  // 招行 H5支付
+	CmbApiPayWeb  = "cmb_api_pay_web"  // 招行 PC支付
+	CmbApiPayQr   = "cmb_api_pay_qr"   // 招行 QR
+	CmbApiPayLite = "cmb_api_pay_lite" // 招行 小程序
 )
 
 type IGatewayResponse interface {
