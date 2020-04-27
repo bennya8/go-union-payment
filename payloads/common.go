@@ -14,7 +14,7 @@ const (
 	WechatGateway                     = "Wechat"
 	QpayGateway                       = "Qpay"
 
-	// 支付 API
+	// 微信支付 API
 	WxApiPayApp       UnionPaymentApi = "wx_api_pay_app"       // 统一下单-APP支付 https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1
 	WxApiPayWap                       = "wx_api_pay_wap"       // 统一下单-WAP支付 https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1
 	WxApiPayPub                       = "wx_api_pay_pub"       // 统一下单-公众号支付 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
@@ -31,13 +31,13 @@ const (
 	WxNotifyPay                       = "wx_notify_pay"        // 支付结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
 	WxNotifyRefund                    = "wx_notify_refund"     // 退款结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=10
 
-	// 企业付款 API
+	// 微信支付 - 企业付款 API
 	WxApiTransfer          = "wx_api_transfer"            // 企业付款 零钱 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2
 	WxApiQueryTransfer     = "wx_api_query_transfer"      // 查询企业付款 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3
 	WxApiTransferBank      = "wx_api_transfer_bank"       // 企业付款 银行卡 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_2
 	WxApiQueryTransferBank = "wx_api_query_transfer_bank" // 查询企业付款 https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=24_3
 
-	// 分账 API
+	// 微信支付 - 分账 API
 	WxApiProfitSharing               = "wx_api_profit_sharing"                 // 请求单次分账 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_1&index=1
 	WxApiMultiProfitSharing          = "wx_api_multi_profit_sharing"           // 请求多次分账 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_6&index=2
 	WxApiProfitSharingQuery          = "wx_api_profit_sharing_query"           // 查询分账结果 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_2&index=3
@@ -54,8 +54,11 @@ const (
 	AliApiPayBar                 = "ali_api_pay_bar"
 	AliApiPayWeb                 = "ali_api_pay_web"
 
-	// qpay apis
-
+	// QQ钱包 API
+	QpayApiPayApp = "qpay_api_pay_app" // App支付
+	QpayApiPayPub = "qpay_api_pay_pub" // 公众号支付
+	QpayApiPayQr  = "qpay_api_pay_qr"  // 扫码支付
+	QpayApiPayBar = "qpay_api_pay_bar" // 付款码支付
 )
 
 type IGatewayResponse interface {
