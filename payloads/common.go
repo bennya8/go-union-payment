@@ -20,6 +20,7 @@ const (
 	WxNotifyRefund                           = "wx_notify_refund"         // 退款结果通知 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=10
 	WxNotifyProfitSharing                    = "wx_notify_profit_sharing" // 分账动账通知 https://pay.weixin.qq.com/wiki/doc/api/allocation.php?chapter=27_9&index=9
 	AliNotifyPay                             = "ali_notify_pay"
+	AliNotifyRefund                          = "ali_notify_refund"
 
 	// apis
 	// 微信支付 API

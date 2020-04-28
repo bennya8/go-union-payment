@@ -21,6 +21,7 @@ func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string
 
 type Base struct {
 	Config *Config
+	GatewayUrl string
 }
 
 func NewBase(config *Config) *Base {
