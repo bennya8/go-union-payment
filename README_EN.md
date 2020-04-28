@@ -181,8 +181,6 @@ You can find all the unit test in the examples folder.
 
 - gopkg.in/yaml.v2
 
-- github.com/iancoleman/strcase
-
 # LICENSE
 
 MIT
