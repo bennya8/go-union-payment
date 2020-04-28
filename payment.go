@@ -3,6 +3,7 @@ package go_union_payment
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"github.com/bennya8/go-union-payment/contracts"
 	"github.com/bennya8/go-union-payment/gateways/alipay"
 	"github.com/bennya8/go-union-payment/gateways/cmb"
@@ -50,16 +51,29 @@ func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPayment
 			if err != nil {
 				return err
 			}
-			notify.PayNotify(u.GatewayIdentify, refund)
+			notify.PayNotify(payloads.WxNotifyRefund, refund)
+			return nil
+		} else {
+			var pay wechat.WxNotifyPayResponse
+			retBytes, err := json.Marshal(retKvMap)
+			if err != nil {
+				return err
+			}
+			err = json.Unmarshal(retBytes, &pay)
+			if err != nil {
+				return err
+			}
+			notify.PayNotify(payloads.WxNotifyPay, pay)
 			return nil
 		}
+	} else if u.GatewayIdentify == payloads.AlipayGateway {
 
-		//return ret, err
-		//req.Body.Read();
-		//notify.PayNotify()
+	} else if u.GatewayIdentify == payloads.QpayGateway {
+
+	} else if u.GatewayIdentify == payloads.CmbGateway {
+
 	}
-
-	return nil
+	return errors.New("unknown gateway identify")
 }
 
 func (u *UnionPayment) gatewayFactory(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) contracts.IGateway {
