@@ -61,10 +61,12 @@ const (
 	AliApiPayQr  = "ali_api_pay_qr"  // 统一收单线下交易预创建 https://opendocs.alipay.com/apis/api_1/alipay.trade.precreate
 
 	// QQ钱包 - API
-	QpayApiPayApp = "qpay_api_pay_app" // 统一下单-App支付 https://qpay.qq.com/buss/wiki/38/1203
-	QpayApiPayPub = "qpay_api_pay_pub" // 统一下单-公众号支付 https://qpay.qq.com/buss/wiki/38/1203
-	QpayApiPayQr  = "qpay_api_pay_qr"  // 统一下单-扫码支付 https://qpay.qq.com/buss/wiki/38/1203
-	QpayApiPayBar = "qpay_api_pay_bar" // 付款码支付 https://qpay.qq.com/buss/wiki/1/1122
+	QpayApiPayApp      = "qpay_api_pay_app" // 统一下单-App支付 https://qpay.qq.com/buss/wiki/38/1203
+	QpayApiPayPub      = "qpay_api_pay_pub" // 统一下单-公众号支付 https://qpay.qq.com/buss/wiki/38/1203
+	QpayApiPayQr       = "qpay_api_pay_qr"  // 统一下单-扫码支付 https://qpay.qq.com/buss/wiki/38/1203
+	QpayApiPayBar      = "qpay_api_pay_bar" // 付款码支付 https://qpay.qq.com/buss/wiki/1/1122
+	QpayApiRefund      = "qpay_api_refund"
+	QpayApiQueryRefund = "qpay_api_query_refund"
 
 	// 招商银行 - API
 	CmbApiPayApp  = "cmb_api_pay_app"  // 招行 APP

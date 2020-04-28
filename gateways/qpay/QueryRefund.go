@@ -5,12 +5,12 @@ import (
 	"github.com/bennya8/go-union-payment/payloads"
 )
 
-type PayQr struct {
+type QueryRefund struct {
 	Base *Base
 }
 
-func (q PayQr) Request(params map[string]string) *payloads.UnionPaymentResult {
-	uri := q.Base.GetFullGatewayUrl("pay/qpay_unified_order.cgi")
+func (q QueryRefund) Request(params map[string]string) *payloads.UnionPaymentResult {
+	uri := q.Base.GetFullGatewayUrl("pay/qpay_refund_query.cgi")
 
 	//api
 
@@ -18,7 +18,7 @@ func (q PayQr) Request(params map[string]string) *payloads.UnionPaymentResult {
 	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 
-func (q PayQr) BuildParams(params map[string]string) map[string]string {
+func (q QueryRefund) BuildParams(params map[string]string) map[string]string {
 	return map[string]string{
 
 	}
