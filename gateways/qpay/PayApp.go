@@ -1,6 +1,8 @@
 package qpay
 
-import "github.com/bennya8/go-union-payment/payloads"
+import (
+	"github.com/bennya8/go-union-payment/payloads"
+)
 
 type PayApp struct {
 	Base *Base

@@ -13,4 +13,3 @@ func (p PayWap) Request(params map[string]string) *payloads.UnionPaymentResult {
 func (p PayWap) BuildParams(params map[string]string) map[string]string {
 	panic("implement me")
 }
-

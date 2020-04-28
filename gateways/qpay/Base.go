@@ -9,7 +9,13 @@ type Gateway struct {
 }
 
 func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
-	panic("implement me")
+	switch api {
+	case payloads.QpayApiPayApp:
+	case payloads.QpayApiPayBar:
+	case payloads.QpayApiPayPub:
+	case payloads.QpayApiPayQr:
+	}
+	return payloads.NewUnionPaymentResult(false, "unknown gateway api", nil)
 }
 
 type Base struct {

@@ -1,4 +1,4 @@
-package qpay
+package alipay
 
 import (
 	"github.com/bennya8/go-union-payment/payloads"

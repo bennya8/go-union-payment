@@ -6,7 +6,6 @@ import (
 
 type PayBar struct {
 	Base *Base
-
 }
 
 func (p PayBar) Request(params map[string]string) *payloads.UnionPaymentResult {
@@ -16,4 +15,3 @@ func (p PayBar) Request(params map[string]string) *payloads.UnionPaymentResult {
 func (p PayBar) BuildParams(params map[string]string) map[string]string {
 	panic("implement me")
 }
-

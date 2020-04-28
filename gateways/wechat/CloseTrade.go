@@ -26,7 +26,7 @@ func (w CloseTrade) Request(params map[string]string) *payloads.UnionPaymentResu
 
 func (w CloseTrade) BuildParams(params map[string]string) map[string]string {
 	ret := map[string]string{
-		"out_trade_no":   params["trade_no"],
+		"out_trade_no": params["trade_no"],
 	}
 	for k, v := range params {
 		ret[k] = v
