@@ -1,31 +1,31 @@
 package wechat
 
 type WxNotifyPayResponse struct {
-	AppId         string `json:"appid"`
-	Attach        string `json:"attach"`
-	BankType      string `json:"bank_type"`
-	CouponCount   int    `json:"coupon_count"`
-	CouponFee     int    `json:"coupon_fee"`
-	CouponId      int    `json:"coupon_id"`
-	CouponType    string `json:"coupon_type"`
-	IsSubscribe   string `json:"is_subscribe"`
-	MchId         int    `json:"mch_id"`
-	NonceStr      string `json:"nonce_str"`
-	Openid        string `json:"openid"`
-	OutTradeNo    string `json:"out_trade_no"`
-	ResultCode    string `json:"result_code"`
-	ReturnCode    string `json:"return_code"`
-	Sign          string `json:"sign"`
-	TimeEnd       int    `json:"time_end"`
-	TotalFee      int    `json:"total_fee"`
-	TradeType     string `json:"trade_type"`
-	TransactionId int    `json:"transaction_id"`
+	AppId         string `json:"appid" xml:"appid"`
+	Attach        string `json:"attach" xml:"attach"`
+	BankType      string `json:"bank_type" xml:"bank_type"`
+	CouponCount   string `json:"coupon_count" xml:"coupon_count"`
+	CouponFee     string `json:"coupon_fee" xml:"coupon_fee"`
+	CouponId      string `json:"coupon_id" xml:"coupon_id"`
+	CouponType    string `json:"coupon_type" xml:"coupon_type"`
+	IsSubscribe   string `json:"is_subscribe" xml:"is_subscribe"`
+	MchId         string `json:"mch_id" xml:"mch_id"`
+	NonceStr      string `json:"nonce_str" xml:"nonce_str"`
+	Openid        string `json:"openid" xml:"openid"`
+	OutTradeNo    string `json:"out_trade_no" xml:"out_trade_no"`
+	ResultCode    string `json:"result_code" xml:"result_code"`
+	ReturnCode    string `json:"return_code" xml:"return_code"`
+	Sign          string `json:"sign" xml:"sign"`
+	TimeEnd       string `json:"time_end" xml:"time_end"`
+	TotalFee      string `json:"total_fee" xml:"total_fee"`
+	TradeType     string `json:"trade_type" xml:"trade_type"`
+	TransactionId string `json:"transaction_id" xml:"transaction_id"`
 }
 
 type WxNotifyRefundResponse struct {
-	AppId      string `json:"appid"`
-	MchId      int    `json:"mch_id"`
-	NonceStr   string `json:"nonce_str"`
-	ReturnCode string `json:"return_code"`
-	ReqInfo    string `json:"req_info"`
+	AppId      string `json:"appid" xml:"app_id"`
+	MchId      string `json:"mch_id" xml:"mch_id"`
+	NonceStr   string `json:"nonce_str" xml:"nonce_str"`
+	ReturnCode string `json:"return_code" xml:"return_code"`
+	ReqInfo    string `json:"req_info" xml:"req_info"`
 }

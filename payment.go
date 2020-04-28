@@ -1,7 +1,6 @@
 package go_union_payment
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"github.com/bennya8/go-union-payment/contracts"
@@ -43,11 +42,7 @@ func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPayment
 		// refund type
 		if _, ok := retKvMap["req_info"]; ok {
 			var refund wechat.WxNotifyRefundResponse
-			retBytes, err := json.Marshal(retKvMap)
-			if err != nil {
-				return err
-			}
-			err = json.Unmarshal(retBytes, &refund)
+			err = xml.Unmarshal(b, &refund)
 			if err != nil {
 				return err
 			}
@@ -55,11 +50,7 @@ func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPayment
 			return nil
 		} else {
 			var pay wechat.WxNotifyPayResponse
-			retBytes, err := json.Marshal(retKvMap)
-			if err != nil {
-				return err
-			}
-			err = json.Unmarshal(retBytes, &pay)
+			err = xml.Unmarshal(b, &pay)
 			if err != nil {
 				return err
 			}
