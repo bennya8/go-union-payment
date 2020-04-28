@@ -241,6 +241,8 @@ http.HandleFunc("/your_notify_url", func(w http.ResponseWriter, r *http.Request)
 
 - gopkg.in/yaml.v2
 
+- github.com/iancoleman/strcase
+
 # LICENSE
 
 MIT

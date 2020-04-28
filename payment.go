@@ -1,6 +1,7 @@
 package go_union_payment
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"github.com/bennya8/go-union-payment/contracts"
@@ -11,6 +12,7 @@ import (
 	"github.com/bennya8/go-union-payment/payloads"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func NewUnionPayment(gateway payloads.UnionPaymentGateway, config contracts.IGatewayConfig) *UnionPayment {
@@ -58,7 +60,31 @@ func (u *UnionPayment) ParserNotify(req *http.Request, notify contracts.IPayment
 			return nil
 		}
 	} else if u.GatewayIdentify == payloads.AlipayGateway {
+		b, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			return err
+		}
+		var retKvMap = map[string]string{}
+		queries := strings.Split(string(b), "&")
+		for _, q := range queries {
+			kv := strings.Split(q, "=")
+			if len(kv) == 2 {
+				retKvMap[kv[0]] = kv[1]
+			}
+		}
+		retKvJson, err := json.Marshal(retKvMap)
+		if err != nil {
+			return err
+		}
 
+		var pay alipay.AliNotifyPayResponse
+		err = json.Unmarshal(retKvJson, &pay)
+		if err != nil {
+			return err
+		}
+
+		notify.PayNotify(payloads.AliNotifyPay, pay)
+		return nil
 	} else if u.GatewayIdentify == payloads.QpayGateway {
 
 	} else if u.GatewayIdentify == payloads.CmbGateway {

@@ -18,7 +18,7 @@ import (
 type WxPaymentService struct {
 }
 
-func (a *WxPaymentService) PayNotify(notify payloads.UnionPaymentNotify, notifyData interface{}) {
+func (a *WxPaymentService) PayNotify(notify payloads.UnionPaymentNotify, notifyData interface{}) (isSuccess bool) {
 
 	if notify == payloads.WxNotifyPay { // 微信支付成功的回调
 		// 强转类型
@@ -36,6 +36,7 @@ func (a *WxPaymentService) PayNotify(notify payloads.UnionPaymentNotify, notifyD
 
 	fmt.Println(notify)
 	fmt.Println(notifyData)
+	return false
 }
 
 func initWxConfig() contracts.IGatewayConfig {
