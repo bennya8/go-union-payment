@@ -46,12 +46,14 @@ func (w PayPub) ParseResult(response payloads.IGatewayResponse) map[string]strin
 	buffer.WriteString(w.Base.Config.SignType)
 	buffer.WriteString("&timeStamp=")
 	buffer.WriteString(timestamp)
-	buffer.WriteString("&key=")
-	buffer.WriteString(w.Base.Config.Md5Key)
 
 	if w.Base.Config.SignType == "MD5" {
+		// only md5 encrypt need the key
+		buffer.WriteString("&key=")
+		buffer.WriteString(w.Base.Config.Md5Key)
 		h = md5.New()
 	} else {
+		// @todo sha-256 will be test...
 		h = hmac.New(sha256.New, []byte(w.Base.Config.Md5Key))
 	}
 	h.Write([]byte(buffer.String()))
