@@ -155,7 +155,7 @@ func TestWxPayLite(t *testing.T) {
 		panic(rs.Msg)
 	}
 
-	fmt.Println(rs.Data.ToJson())
+	fmt.Println(rs.Data)
 }
 
 func TestWxPayWap(t *testing.T) {
@@ -207,5 +207,5 @@ func TestWxPayPub(t *testing.T) {
 		panic(rs.Msg)
 	}
 
-	fmt.Println(rs.Data.ToJson())
+	fmt.Println(rs.Data)
 }

@@ -86,10 +86,10 @@ type IGatewayResponse interface {
 type UnionPaymentResult struct {
 	State bool
 	Msg   string
-	Data  IGatewayResponse
+	Data  interface{}
 }
 
-func NewUnionPaymentResult(state bool, msg string, data IGatewayResponse) *UnionPaymentResult {
+func NewUnionPaymentResult(state bool, msg string, data interface{}) *UnionPaymentResult {
 	return &UnionPaymentResult{
 		State: state,
 		Msg:   msg,

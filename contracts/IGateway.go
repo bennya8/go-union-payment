@@ -11,8 +11,9 @@ type IGateway interface {
 }
 
 type IGatewayRequest interface {
-	Request(params map[string]string) *payloads.UnionPaymentResult
 	BuildParams(params map[string]string) map[string]string
+	Request(params map[string]string) *payloads.UnionPaymentResult
+	ParseResult(response payloads.IGatewayResponse) map[string]string
 }
 
 type xmlMapEntry struct {
