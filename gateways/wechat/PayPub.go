@@ -26,47 +26,45 @@ func (w PayPub) Request(params map[string]string) *payloads.UnionPaymentResult {
 }
 
 func (w PayPub) ParseResult(response payloads.IGatewayResponse) map[string]string {
-
+	var retData = map[string]string{}
 	retMap, err := response.ToMap()
-	if err == nil {
-		var (
-			buffer    strings.Builder
-			h         hash.Hash
-			timestamp = strconv.FormatInt(time.Now().Unix(), 10)
-		)
-		buffer.WriteString("appId=")
-		buffer.WriteString(retMap["appid"].(string))
-		buffer.WriteString("&nonceStr=")
-		buffer.WriteString(retMap["nonce_str"].(string))
-		buffer.WriteString("&package=")
-		buffer.WriteString("prepay_id=" + retMap["prepay_id"].(string))
-		buffer.WriteString("&signType=")
-		buffer.WriteString(w.Base.Config.SignType)
-		buffer.WriteString("&timeStamp=")
-		buffer.WriteString(timestamp)
-		buffer.WriteString("&key=")
-		buffer.WriteString(w.Base.Config.Md5Key)
-
-		if w.Base.Config.SignType == "MD5" {
-			h = md5.New()
-		} else {
-			h = hmac.New(sha256.New, []byte(w.Base.Config.Md5Key))
-		}
-		h.Write([]byte(buffer.String()))
-
-		return map[string]string{
-			"appId":     retMap["appid"].(string),
-			"nonceStr":  retMap["nonce_str"].(string),
-			"package":   "prepay_id=" + retMap["prepay_id"].(string),
-			"paySign":   strings.ToUpper(hex.EncodeToString(h.Sum(nil))),
-			"signType":  w.Base.Config.SignType,
-			"timeStamp": timestamp,
-		}
+	if err != nil {
+		return retData
 	}
+	var (
+		buffer    strings.Builder
+		h         hash.Hash
+		timestamp = strconv.FormatInt(time.Now().Unix(), 10)
+	)
+	buffer.WriteString("appId=")
+	buffer.WriteString(retMap["appid"].(string))
+	buffer.WriteString("&nonceStr=")
+	buffer.WriteString(retMap["nonce_str"].(string))
+	buffer.WriteString("&package=")
+	buffer.WriteString("prepay_id=" + retMap["prepay_id"].(string))
+	buffer.WriteString("&signType=")
+	buffer.WriteString(w.Base.Config.SignType)
+	buffer.WriteString("&timeStamp=")
+	buffer.WriteString(timestamp)
+	buffer.WriteString("&key=")
+	buffer.WriteString(w.Base.Config.Md5Key)
 
-	return map[string]string{
-
+	if w.Base.Config.SignType == "MD5" {
+		h = md5.New()
+	} else {
+		h = hmac.New(sha256.New, []byte(w.Base.Config.Md5Key))
 	}
+	h.Write([]byte(buffer.String()))
+
+	retData = map[string]string{
+		"appId":     retMap["appid"].(string),
+		"nonceStr":  retMap["nonce_str"].(string),
+		"package":   "prepay_id=" + retMap["prepay_id"].(string),
+		"paySign":   strings.ToUpper(hex.EncodeToString(h.Sum(nil))),
+		"signType":  w.Base.Config.SignType,
+		"timeStamp": timestamp,
+	}
+	return retData
 }
 
 func (w PayPub) BuildParams(params map[string]string) map[string]string {
