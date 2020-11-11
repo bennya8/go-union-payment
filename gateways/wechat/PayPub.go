@@ -22,7 +22,7 @@ type PayPub struct {
 func (w PayPub) Request(params map[string]string) *payloads.UnionPaymentResult {
 	uri := w.Base.GetFullGatewayUrl("pay/unifiedorder")
 	resp, err := w.Base.Request(uri, w.BuildParams(params))
-	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
+	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), w.ParseResult(resp))
 }
 
 func (w PayPub) ParseResult(response payloads.IGatewayResponse) map[string]string {
