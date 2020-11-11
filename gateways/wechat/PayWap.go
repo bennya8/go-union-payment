@@ -62,12 +62,18 @@ func (w PayWap) BuildParams(params map[string]string) map[string]string {
 	}
 
 	var sceneInfo interface{}
-	_ = json.Unmarshal([]byte(params["scene_info"]), &sceneInfo)
+	storeInfoBytes := ""
 
-	storeInfo := map[string]interface{}{
-		"scene_info": sceneInfo,
+	if len(params["scene_info"]) > 0 {
+		_ = json.Unmarshal([]byte(params["scene_info"]), &sceneInfo)
+		storeInfo := map[string]interface{}{
+			"scene_info": sceneInfo,
+		}
+		storeInfoBytesTmp, err := json.Marshal(storeInfo)
+		if err != nil {
+			storeInfoBytes = string(storeInfoBytesTmp)
+		}
 	}
-	storeInfoBytes, _ := json.Marshal(storeInfo)
 
 	ret := map[string]string{
 		"device_info":      params["device_info"],
@@ -85,7 +91,7 @@ func (w PayWap) BuildParams(params map[string]string) map[string]string {
 		"trade_type":       "MWEB",
 		"limit_pay":        limitPay,
 		"receipt":          receiptStr,
-		"scene_info":       string(storeInfoBytes),
+		"scene_info":       storeInfoBytes,
 		"openid":           params["openid"],
 	}
 
