@@ -47,17 +47,19 @@ func NewBaseResponse(resp string) *BaseResponse {
 func (w *BaseResponse) ToMap() (map[string]interface{}, error) {
 	var retKvMap map[string]string
 	err := xml.Unmarshal([]byte(w.Resp), (*contracts.XmlParams)(&retKvMap))
-
+	if err != nil {
+		return nil, err
+	}
 	var ret map[string]interface{}
 	retBytes, err := json.Marshal(retKvMap)
 	if err != nil {
-		return ret, nil
+		return nil, err
 	}
 	err = json.Unmarshal(retBytes, &ret)
 	if err != nil {
-		return ret, nil
+		return nil, err
 	}
-	return ret, err
+	return ret, nil
 }
 
 func (w *BaseResponse) ToJson() (string, error) {
