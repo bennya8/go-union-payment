@@ -144,7 +144,7 @@ func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, err
 	}
 
 	// append signature
-	sign := b.makeSign(signStr)
+	sign := b.MakeSign(signStr)
 	x += "<sign><![CDATA[" + sign + "]]></sign>"
 	x += "</xml>"
 
@@ -194,7 +194,24 @@ func (*Base) getSignKey() string {
 	return ""
 }
 
-func (b *Base) makeSign(signStr string) string {
+func (b *Base) BuildSign(timestamp string, retMap map[string]interface{}) string {
+	var (
+		buffer strings.Builder
+	)
+	buffer.WriteString("appId=")
+	buffer.WriteString(retMap["appid"].(string))
+	buffer.WriteString("&nonceStr=")
+	buffer.WriteString(retMap["nonce_str"].(string))
+	buffer.WriteString("&package=")
+	buffer.WriteString("prepay_id=" + retMap["prepay_id"].(string))
+	buffer.WriteString("&signType=")
+	buffer.WriteString(b.Config.SignType)
+	buffer.WriteString("&timeStamp=")
+	buffer.WriteString(timestamp)
+	return buffer.String()
+}
+
+func (b *Base) MakeSign(signStr string) string {
 	var sign string
 	if b.SignType == SignTypeMd5 {
 		signStr += "&key=" + b.MerKey
