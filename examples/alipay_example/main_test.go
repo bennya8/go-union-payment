@@ -75,14 +75,6 @@ func TestAlipayPayApp(t *testing.T) {
 	if !result.State {
 		t.Error(result.Msg)
 	}
-	m, e := result.Data.ToMap()
-	fmt.Println(m, e)
-
-	j, e := result.Data.ToJson()
-	fmt.Println(j, e)
-
-	x, e := result.Data.ToXml()
-	fmt.Println(x, e)
 }
 
 
