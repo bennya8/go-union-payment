@@ -11,16 +11,21 @@ type Gateway struct {
 func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
 	switch api {
 	case payloads.AliApiPayApp:
+		return (&PayApp{Base: a.Base}).Request(params)
 	case payloads.AliApiPayBar:
+		return (&PayBar{Base: a.Base}).Request(params)
 	case payloads.AliApiPayQr:
+		return (&PayQr{Base: a.Base}).Request(params)
 	case payloads.AliApiPayWap:
+		return (&PayWap{Base: a.Base}).Request(params)
 	case payloads.AliApiPayWeb:
+		return (&PayWeb{Base: a.Base}).Request(params)
 	}
 	return payloads.NewUnionPaymentResult(false, "unknown gateway api", nil)
 }
 
 type Base struct {
-	Config *Config
+	Config     *Config
 	GatewayUrl string
 }
 
