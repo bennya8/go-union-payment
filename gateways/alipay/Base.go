@@ -1,6 +1,7 @@
 package alipay
 
 import (
+	"fmt"
 	"github.com/bennya8/go-union-payment/payloads"
 )
 
@@ -34,4 +35,12 @@ func NewBase(config *Config) *Base {
 	b.Config = config
 
 	return b
+}
+
+func (b *Base) GetFullGatewayUrl(method string) string {
+	return fmt.Sprintf(b.GatewayUrl, method)
+}
+
+func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, error) {
+	return NewBaseResponse("TODO"), nil
 }
