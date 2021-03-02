@@ -2,9 +2,11 @@ package alipay
 
 import (
 	"bytes"
+	"crypto"
 	"encoding/json"
 	"fmt"
 	"github.com/bennya8/go-union-payment/payloads"
+	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/date"
 	"io/ioutil"
 	"net/http"
@@ -122,9 +124,9 @@ func (b *Base) BuildSign(signData map[string]string) string {
 func (b *Base) MakeSign(signStr string) string {
 	var sign string
 	if b.Config.SignType == SignTypeRsa {
-		// @todo load private key and encrypt with rsa util
+		sign = crypt.Rsa2Sign(sign, b.Config.RsaPrivateKey, crypto.SHA1)
 	} else if b.Config.SignType == SignTypeRsa2 {
-		// @todo load private key and encrypt with rsa2 util
+		sign = crypt.Rsa2Sign(sign, b.Config.RsaPrivateKey, crypto.SHA256)
 	}
 	return sign
 }
