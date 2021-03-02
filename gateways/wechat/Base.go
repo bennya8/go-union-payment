@@ -18,10 +18,6 @@ import (
 	"strings"
 )
 
-const NonceLen = 32
-const SignTypeMd5 = "MD5"
-const SignTypeSha = "HMAC-SHA256"
-
 type Gateway struct {
 	Base *Base
 }
@@ -53,44 +49,31 @@ func (w *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string
 }
 
 type Base struct {
+	Config *Config
+	Http   http.Client
+	// common properties
 	GatewayUrl string
-	MerKey     string
-	SandboxKey string
-	IsSandbox  bool
-	ReturnRaw  bool
-	NonceStr   string
-	UseBackup  bool
-	SignType   string
-	Http       http.Client
-	Config     *Config
 }
 
 func NewBase(config *Config) *Base {
 	b := &Base{}
 	b.Config = config
 
-	// @todo the following params could be remove lately.
-	b.IsSandbox = config.UseSandbox
-	b.UseBackup = config.UseBackup
-	b.ReturnRaw = config.ReturnRaw
-	b.MerKey = config.Md5Key
-	b.SignType = config.SignType
-	b.NonceStr = str.GetNonce(NonceLen)
-
 	// initial wechat gateway address
 	b.GatewayUrl = "https://api.mch.weixin.qq.com/%s"
-	if b.IsSandbox {
+	if b.Config.UseSandbox {
 		b.GatewayUrl = "https://api.mch.weixin.qq.com/sandboxnew/%s"
-	} else if b.UseBackup {
+	} else if b.Config.UseBackup {
 		b.GatewayUrl = "https://api2.mch.weixin.qq.com/%s"
 	}
 
 	// if using sandbox env then switch the merchant key
-	if b.IsSandbox && len(b.SandboxKey) == 0 {
-		b.SandboxKey = b.getSignKey()
-		b.MerKey = b.SandboxKey
+	if b.Config.UseBackup && len(b.Config.SandboxKey) == 0 {
+		b.Config.SandboxKey = b.getSignKey()
+		b.Config.Md5Key = b.Config.SandboxKey
 	}
 
+	// init http client with CA certs
 	b.initHttp()
 
 	return b
@@ -107,8 +90,8 @@ func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, err
 		"sub_appid":  b.Config.SubAppId,
 		"mch_id":     b.Config.MchId,
 		"sub_mch_id": b.Config.SubMchId,
-		"nonce_str":  b.NonceStr,
-		"sign_type":  b.SignType,
+		"nonce_str":  str.GetNonce(NonceLen),
+		"sign_type":  b.Config.SignType,
 	}
 	for k, v := range baseParams {
 		params[k] = v
@@ -165,32 +148,9 @@ func (b *Base) Request(uri string, params map[string]string) (*BaseResponse, err
 	return NewBaseResponse(string(body)), nil
 }
 
-func (b *Base) initHttp() {
-	// load the ca pem via. binary
-	reader := strings.NewReader(certs.WxCaCertPem())
-	caCert, err := ioutil.ReadAll(reader)
-	if err != nil {
-		log.Fatal(err)
-	}
-	pool := x509.NewCertPool()
-	pool.AppendCertsFromPEM(caCert)
-
-	clientCert, err := tls.LoadX509KeyPair(b.Config.AppCertPem, b.Config.AppKeyPem)
-	tlsConfig := tls.Config{
-		RootCAs:      pool,
-		Certificates: []tls.Certificate{clientCert},
-	}
-	transport := http.Transport{
-		TLSClientConfig: &tlsConfig,
-	}
-	b.Http = http.Client{
-		Transport: &transport,
-	}
-}
-
 func (*Base) getSignKey() string {
 	//method := "pay/getsignkey"
-	// @todo request wx api is require when fetch the signature key with sanbox env.
+	// @todo request wx api is necessary when fetch the signature key with sanbox env.
 	return ""
 }
 
@@ -213,32 +173,35 @@ func (b *Base) BuildSign(timestamp string, retMap map[string]interface{}) string
 
 func (b *Base) MakeSign(signStr string) string {
 	var sign string
-	if b.SignType == SignTypeMd5 {
-		signStr += "&key=" + b.MerKey
+	if b.Config.SignType == SignTypeMd5 {
+		signStr += "&key=" + b.Config.Md5Key
 		sign = crypt.MD5(signStr)
-	} else if b.SignType == SignTypeSha {
-		signStr += "&key=" + b.MerKey
-		sign = crypt.HmacSha1(signStr, b.MerKey)
+	} else if b.Config.SignType == SignTypeSha {
+		signStr += "&key=" + b.Config.Md5Key
+		sign = crypt.HmacSha1(signStr, b.Config.Md5Key)
 	}
 	return sign
 }
 
-func (b *Base) ToXml(params map[string]string) string {
-	x := "<xml>"
-	for k, v := range params {
-		x += "<" + k + "><![CDATA[" + v + "]]></" + k + ">"
+func (b *Base) initHttp() {
+	// load the ca pem via. binary
+	reader := strings.NewReader(certs.WxCaCertPem())
+	caCert, err := ioutil.ReadAll(reader)
+	if err != nil {
+		log.Fatal(err)
 	}
-	x += "</xml>"
-	return x
-}
+	pool := x509.NewCertPool()
+	pool.AppendCertsFromPEM(caCert)
 
-//func (*Base) modifiedParams(params map[string]interface{}) {
-//	modKeys := map[string]bool{
-//		"mmpaymkttransfers/promotion/transfers": true,
-//		"mmpaymkttransfers/sendredpack":         true,
-//	}
-//	if _, ok := params[modKeys] {
-//
-//	}
-//
-//}
+	clientCert, err := tls.LoadX509KeyPair(b.Config.AppCertPem, b.Config.AppKeyPem)
+	tlsConfig := tls.Config{
+		RootCAs:      pool,
+		Certificates: []tls.Certificate{clientCert},
+	}
+	transport := http.Transport{
+		TLSClientConfig: &tlsConfig,
+	}
+	b.Http = http.Client{
+		Transport: &transport,
+	}
+}

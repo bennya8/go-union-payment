@@ -22,6 +22,10 @@ func (c Config) ParseConfig() interface{} {
 	return c
 }
 
+func (c Config) CheckConfig() error {
+	return nil
+}
+
 func NewConfigWithJson(content []byte) (*Config, error) {
 	var config Config
 	err := json.Unmarshal(content, &config)

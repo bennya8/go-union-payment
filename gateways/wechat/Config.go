@@ -5,6 +5,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const NonceLen = 32
+const SignTypeMd5 = "MD5"
+const SignTypeSha = "HMAC-SHA256"
+
 type Config struct {
 	UseSandbox  bool     `json:"use_sandbox" yaml:"use_sandbox"`
 	UseBackup   bool     `json:"use_backup" yaml:"use_backup"`
@@ -21,10 +25,15 @@ type Config struct {
 	ReturnRaw   bool     `json:"return_raw" yaml:"return_raw"`
 	NotifyUrl   string   `json:"notify_url" yaml:"notify_url"`
 	RedirectUrl string   `json:"redirect_url" yaml:"redirect_url"`
+	SandboxKey  string   `json:"sandbox_key" yaml:"sandbox_key"`
 }
 
 func (c Config) ParseConfig() interface{} {
 	return c
+}
+
+func (c Config) CheckConfig() error {
+	return nil
 }
 
 func NewConfigWithJson(content []byte) (*Config, error) {
