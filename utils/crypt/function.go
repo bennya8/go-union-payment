@@ -9,7 +9,6 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -65,8 +64,6 @@ func InitPrivateKey(key string, isPath bool) (priKey *rsa.PrivateKey, err error)
 	} else {
 		pemData = []byte(PriPemBegin + key + PriPemEnd)
 	}
-	fmt.Println(string(pemData))
-
 	if err != nil {
 		err = errors.New("invalid private key")
 		return
