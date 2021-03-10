@@ -1,19 +1,23 @@
 package crypt
 
 import (
-	"crypto"
 	"crypto/hmac"
 	"crypto/md5"
-	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha1"
-	"crypto/sha256"
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
-	"strings"
+	"fmt"
+	"io/ioutil"
+)
+
+const (
+	PriPemBegin = "-----BEGIN RSA PRIVATE KEY-----\n"
+	PriPemEnd   = "\n-----END RSA PRIVATE KEY-----"
+	PubPemBegin = "-----BEGIN PUBLIC KEY-----\n"
+	PubPemEnd   = "\n-----END PUBLIC KEY-----"
 )
 
 func MD5(text string) string {
@@ -28,88 +32,60 @@ func HmacSha1(text string, key string) string {
 	return string(h.Sum(nil))
 }
 
+func InitPublicKey(key string, isPath bool) (pubKey *rsa.PublicKey, err error) {
+	var pemData []byte
 
-// RSA Helper
-// @source https://blog.csdn.net/weixin_38750413/article/details/111586283
-
-const (
-	PEMBEGIN    = "-----BEGIN RSA PRIVATE KEY-----\n"
-	PEMEND      = "\n-----END RSA PRIVATE KEY-----"
-	PUBPEMBEGIN = "-----BEGIN PUBLIC KEY-----\n"
-	PUBPEMEND   = "\n-----END PUBLIC KEY-----"
-)
-
-func Rsa2Sign(signContent string, privateKey string, hash crypto.Hash) string {
-	shaNew := hash.New()
-	shaNew.Write([]byte(signContent))
-	hashed := shaNew.Sum(nil)
-	priKey, err := ParsePrivateKey(privateKey)
-	if err != nil {
-		return ""
+	if isPath {
+		pemData, err = ioutil.ReadFile(key)
+	} else {
+		pemData = []byte(PubPemBegin + key + PubPemEnd)
 	}
-	signature, err := rsa.SignPKCS1v15(rand.Reader, priKey, hash, hashed)
 	if err != nil {
-		return ""
+		return
 	}
-	return base64.StdEncoding.EncodeToString(signature)
-}
-
-func ParsePrivateKey(privateKey string) (*rsa.PrivateKey, error) {
-	privateKey = FormatPrivateKey(privateKey)
-	block, _ := pem.Decode([]byte(privateKey))
+	block, _ := pem.Decode(pemData)
 	if block == nil {
-		return nil, errors.New("私钥信息错误！")
+		err = errors.New("invalid public key")
+		return
 	}
-	priKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
-		return nil, err
+		err = errors.New("invalid public key")
+		return
 	}
-	return priKey, nil
+	pubKey = pubInterface.(*rsa.PublicKey)
+	return
 }
 
-func FormatPrivateKey(privateKey string) string {
-	if !strings.HasPrefix(privateKey, PEMBEGIN) {
-		privateKey = PEMBEGIN + privateKey
-	}
-	if !strings.HasSuffix(privateKey, PEMEND) {
-		privateKey = privateKey + PEMEND
-	}
-	return privateKey
-}
+func InitPrivateKey(key string, isPath bool) (priKey *rsa.PrivateKey, err error) {
+	var pemData []byte
 
-func Rsa2PubSign(signContent, sign, publicKey string, hash crypto.Hash) bool {
-	hashed := sha256.Sum256([]byte(signContent))
-	pubKey, err := ParsePublicKey(publicKey)
-	if err != nil {
-		return false
+	if isPath {
+		pemData, err = ioutil.ReadFile(key)
+	} else {
+		pemData = []byte(PriPemBegin + key + PriPemEnd)
 	}
-	sig, _ := base64.StdEncoding.DecodeString(sign)
-	err = rsa.VerifyPKCS1v15(pubKey, hash, hashed[:], sig)
-	if err != nil {
-		return false
-	}
-	return true
-}
+	fmt.Println(string(pemData))
 
-func ParsePublicKey(publicKey string) (*rsa.PublicKey, error) {
-	publicKey = FormatPublicKey(publicKey)
-	block, _ := pem.Decode([]byte(publicKey))
+	if err != nil {
+		err = errors.New("invalid private key")
+		return
+	}
+	block, _ := pem.Decode(pemData)
 	if block == nil {
-		return nil, errors.New("公钥信息错误！")
+		err = errors.New("invalid private key")
+		return
 	}
-	pubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, err
+	if got, want := block.Type, "RSA PRIVATE KEY"; got != want {
+		err = errors.New("invalid private key")
+		return
 	}
-	return pubKey.(*rsa.PublicKey), nil
-}
 
-func FormatPublicKey(publicKey string) string {
-	if !strings.HasPrefix(publicKey, PUBPEMBEGIN) {
-		publicKey = PUBPEMBEGIN + publicKey
+	priInterface, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		err = errors.New("invalid private key error:" + err.Error())
+		return
 	}
-	if !strings.HasSuffix(publicKey, PUBPEMEND) {
-		publicKey = publicKey + PUBPEMEND
-	}
-	return publicKey
+	priKey = priInterface.(*rsa.PrivateKey)
+	return
 }

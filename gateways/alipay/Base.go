@@ -3,12 +3,17 @@ package alipay
 import (
 	"bytes"
 	"crypto"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/bennya8/go-union-payment/payloads"
 	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/date"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
 	"time"
@@ -39,6 +44,8 @@ type Base struct {
 	Http   http.Client
 	// Common Properties
 	GatewayUrl string
+	PublicKey  *rsa.PublicKey
+	PrivateKey *rsa.PrivateKey
 }
 
 func NewBase(config *Config) *Base {
@@ -49,6 +56,18 @@ func NewBase(config *Config) *Base {
 	b.GatewayUrl = "https://openapi.alipay.com/gateway.do?%s"
 	if b.Config.UseSandbox {
 		b.GatewayUrl = "https://openapi.alipaydev.com/gateway.do?%s"
+	}
+
+	// init rsa certs
+	var err error
+	b.PrivateKey, err = crypt.InitPrivateKey(b.Config.RsaPrivateKey, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	b.PublicKey, err = crypt.InitPublicKey(b.Config.AliPublicKey, false)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return b
@@ -122,11 +141,25 @@ func (b *Base) BuildSign(signData map[string]string) string {
 }
 
 func (b *Base) MakeSign(signStr string) string {
-	var sign string
+	var sign []byte
+	var err error
+
 	if b.Config.SignType == SignTypeRsa {
-		sign = crypt.Rsa2Sign(sign, b.Config.RsaPrivateKey, crypto.SHA1)
+		h := sha1.New()
+		io.WriteString(h, signStr)
+		hashed := h.Sum(nil)
+		sign, err = rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA1, hashed)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else if b.Config.SignType == SignTypeRsa2 {
-		sign = crypt.Rsa2Sign(sign, b.Config.RsaPrivateKey, crypto.SHA256)
+		h := crypto.SHA256.New()
+
+		hashed := h.Sum(nil)
+		sign, err = rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA256, hashed)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	return sign
+	return string(sign)
 }
