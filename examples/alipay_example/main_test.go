@@ -70,11 +70,13 @@ func TestAlipayPayApp(t *testing.T) {
 		"store_id":     "",
 	}
 
-	result := payment.Invoke(payloads.AliApiPayApp, payData)
+	result := payment.Invoke(payloads.AliApiPayWap, payData)
 
 	if !result.State {
 		t.Error(result.Msg)
 	}
+
+	fmt.Println(result.Data)
 }
 
 

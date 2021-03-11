@@ -32,7 +32,7 @@ func TimeLayout(format string) string {
 }
 
 func TimeFormat(time time.Time, format ...string) string {
-	layout := "YYYY-MM-DD HH:mm:ss"
+	layout := "YYYY-MM-DD hh:ii:ss"
 	if len(format) > 0 {
 		layout = format[0]
 	}

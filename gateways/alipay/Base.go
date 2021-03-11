@@ -1,21 +1,21 @@
 package alipay
 
 import (
-	"bytes"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha1"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/bennya8/go-union-payment/payloads"
 	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/date"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -73,8 +73,8 @@ func NewBase(config *Config) *Base {
 	return b
 }
 
-func (b *Base) GetFullGatewayUrl(method string) string {
-	return fmt.Sprintf(b.GatewayUrl, method)
+func (b *Base) GetFullGatewayUrl(params string) string {
+	return fmt.Sprintf(b.GatewayUrl, params)
 }
 
 func (b *Base) Request(uri string, bizContentParams map[string]string) (*BaseResponse, error) {
@@ -99,22 +99,27 @@ func (b *Base) Request(uri string, bizContentParams map[string]string) (*BaseRes
 	}
 
 	signStr := b.BuildSign(signData)
-	signData["sign"] = b.MakeSign(signStr)
+	sign := b.MakeSign(signStr)
 
-	contentBody, _ := json.Marshal(signData)
-	contentBodyBuf := bytes.NewBuffer(contentBody)
-	resp, err := b.Http.Post(uri, "application/json", contentBodyBuf)
-	if err != nil {
-		return nil, err
-	}
+	//contentBody, _ := json.Marshal(signData)
+	//contentBodyBuf := bytes.NewBuffer(contentBody)
 
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	fmt.Println(signStr)
 
-	return NewBaseResponse(string(body)), nil
+	payUrl := b.GetFullGatewayUrl(b.BuildParams(signData) + "&sign=" + sign)
+
+	//resp, err := b.Http.Post(uri, "application/json", contentBodyBuf)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//defer resp.Body.Close()
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	return NewBaseResponse(payUrl), nil
 }
 
 func (b *Base) BuildSign(signData map[string]string) string {
@@ -134,32 +139,40 @@ func (b *Base) BuildSign(signData map[string]string) string {
 	var sign string
 
 	for _, k := range keys {
-		sign += signData[k]
+		sign += k + "=" + signData[k] + "&"
 	}
 
 	return sign
 }
 
+func (b *Base) BuildParams(kvPairs map[string]string) string {
+	var param string
+	for k, v := range kvPairs {
+		param += k + "=" + v + "&"
+	}
+	return strings.TrimRight(param, "&")
+}
+
 func (b *Base) MakeSign(signStr string) string {
-	var sign []byte
-	var err error
+	var sign string
 
 	if b.Config.SignType == SignTypeRsa {
 		h := sha1.New()
 		io.WriteString(h, signStr)
 		hashed := h.Sum(nil)
-		sign, err = rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA1, hashed)
+		rsaSign, err := rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA1, hashed)
 		if err != nil {
 			log.Fatal(err)
 		}
+		sign = base64.StdEncoding.EncodeToString(rsaSign)
 	} else if b.Config.SignType == SignTypeRsa2 {
 		h := crypto.SHA256.New()
-
 		hashed := h.Sum(nil)
-		sign, err = rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA256, hashed)
+		rsaSign, err := rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA256, hashed)
 		if err != nil {
 			log.Fatal(err)
 		}
+		sign = base64.StdEncoding.EncodeToString(rsaSign)
 	}
 	return string(sign)
 }
