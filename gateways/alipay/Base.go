@@ -1,6 +1,7 @@
 package alipay
 
 import (
+	"bytes"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
@@ -12,8 +13,10 @@ import (
 	"github.com/bennya8/go-union-payment/utils/crypt"
 	"github.com/bennya8/go-union-payment/utils/date"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"sort"
 	"strings"
 	"time"
@@ -53,9 +56,9 @@ func NewBase(config *Config) *Base {
 	b.Config = config
 	b.Http = http.Client{}
 
-	b.GatewayUrl = "https://openapi.alipay.com/gateway.do?%s"
+	b.GatewayUrl = "https://openapi.alipay.com/gateway.do"
 	if b.Config.UseSandbox {
-		b.GatewayUrl = "https://openapi.alipaydev.com/gateway.do?%s"
+		b.GatewayUrl = "https://openapi.alipaydev.com/gateway.do"
 	}
 
 	// init rsa certs
@@ -74,7 +77,7 @@ func NewBase(config *Config) *Base {
 }
 
 func (b *Base) GetFullGatewayUrl(params string) string {
-	return fmt.Sprintf(b.GatewayUrl, params)
+	return fmt.Sprintf("%s?%s", b.GatewayUrl, params)
 }
 
 func (b *Base) Request(uri string, bizContentParams map[string]string) (*BaseResponse, error) {
@@ -88,6 +91,7 @@ func (b *Base) Request(uri string, bizContentParams map[string]string) (*BaseRes
 	signData["format"] = b.Config.Format
 	signData["sign_type"] = b.Config.SignType
 	signData["version"] = b.Config.Version
+	signData["notify_url"] = b.Config.NotifyUrl
 	signData["timestamp"] = date.TimeFormat(time.Now())
 
 	// biz params
@@ -99,27 +103,26 @@ func (b *Base) Request(uri string, bizContentParams map[string]string) (*BaseRes
 	}
 
 	signStr := b.BuildSign(signData)
-	sign := b.MakeSign(signStr)
+	signData["sign"] = b.MakeSign(signStr)
 
-	//contentBody, _ := json.Marshal(signData)
-	//contentBodyBuf := bytes.NewBuffer(contentBody)
+	if uri == "alipay.trade.app.pay" {
+		return NewBaseResponse(b.BuildUrlEncode(signData)), nil
+	} else if uri == "alipay.trade.wap.pay" ||
+		uri == "alipay.trade.page.pay" ||
+		uri == "alipay.user.certify.open.certify" {
+		return NewBaseResponse(b.GetFullGatewayUrl(b.BuildUrlEncode(signData))), nil
+	}
 
-	fmt.Println(signStr)
-
-	payUrl := b.GetFullGatewayUrl(b.BuildParams(signData) + "&sign=" + sign)
-
-	//resp, err := b.Http.Post(uri, "application/json", contentBodyBuf)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//defer resp.Body.Close()
-	//body, err := ioutil.ReadAll(resp.Body)
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	return NewBaseResponse(payUrl), nil
+	resp, err := b.Http.Post(b.GatewayUrl, "application/form-data", bytes.NewBufferString(b.BuildUrlEncode(signData)))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return NewBaseResponse(string(body)), nil
 }
 
 func (b *Base) BuildSign(signData map[string]string) string {
@@ -137,20 +140,31 @@ func (b *Base) BuildSign(signData map[string]string) string {
 
 	// build sign
 	var sign string
-
 	for _, k := range keys {
-		sign += k + "=" + signData[k] + "&"
+		if len(signData[k]) > 0 {
+			sign += k + "=" + signData[k] + "&"
+		}
 	}
-
-	return sign
+	return strings.TrimRight(sign, "&")
 }
 
-func (b *Base) BuildParams(kvPairs map[string]string) string {
-	var param string
-	for k, v := range kvPairs {
-		param += k + "=" + v + "&"
+func (b *Base) BuildUrlEncode(kvPairs map[string]string) string {
+	// sort the key
+	var keys []string
+	for k := range kvPairs {
+		keys = append(keys, k)
 	}
-	return strings.TrimRight(param, "&")
+	sort.Strings(keys)
+	params := ""
+	for _, k := range keys {
+		if len(kvPairs[k]) > 0 {
+			if k == "sign" {
+				continue
+			}
+			params += k + "=" + url.QueryEscape(kvPairs[k]) + "&"
+		}
+	}
+	return params + "sign=" + url.QueryEscape(kvPairs["sign"])
 }
 
 func (b *Base) MakeSign(signStr string) string {
@@ -167,6 +181,8 @@ func (b *Base) MakeSign(signStr string) string {
 		sign = base64.StdEncoding.EncodeToString(rsaSign)
 	} else if b.Config.SignType == SignTypeRsa2 {
 		h := crypto.SHA256.New()
+		io.WriteString(h, signStr)
+
 		hashed := h.Sum(nil)
 		rsaSign, err := rsa.SignPKCS1v15(rand.Reader, b.PrivateKey, crypto.SHA256, hashed)
 		if err != nil {
@@ -174,5 +190,5 @@ func (b *Base) MakeSign(signStr string) string {
 		}
 		sign = base64.StdEncoding.EncodeToString(rsaSign)
 	}
-	return string(sign)
+	return sign
 }

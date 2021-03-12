@@ -52,7 +52,7 @@ func TestCmbConfigWithJson(t *testing.T) {
 	fmt.Println(aliConfig)
 }
 
-func TestAlipayPayApp(t *testing.T) {
+func TestAlipayPayWap(t *testing.T) {
 	config := initAliConfig()
 
 	// instance of go-union-payment
@@ -60,14 +60,15 @@ func TestAlipayPayApp(t *testing.T) {
 
 	// call the gateway channel api
 	payData := map[string]string{
-		"body":         "goods information",
-		"subject":      "debug goods app payment",
-		"trade_no":     "xxx" + strconv.Itoa(rand.Intn(99999999)),
-		"time_expire":  strconv.Itoa(int(time.Now().Unix()) + 600),
-		"amount":       "0.01",
-		"return_param": "anything_you_want",
-		"goods_type":   "1", // 0 虚拟，1 实物,
-		"store_id":     "",
+		"body":            "GO Training",
+		"subject":         "GO Training",
+		"trade_no":        "wx-trade-" + fmt.Sprintf("%d", rand.Intn(999999)),
+		"timeout_express": strconv.Itoa(int(time.Now().Unix()) + 600),
+		"amount":          "0.01",
+		"return_param":    "",
+		"client_ip":       "",
+		"goods_type":      "0", // 0 虚拟，1 实物,
+		"store_id":        "",
 	}
 
 	result := payment.Invoke(payloads.AliApiPayWap, payData)
@@ -78,8 +79,6 @@ func TestAlipayPayApp(t *testing.T) {
 
 	fmt.Println(result.Data)
 }
-
-
 
 func TestAlipayNotifyPay(t *testing.T) {
 	// 初始化接管服务

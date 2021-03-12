@@ -18,7 +18,6 @@ const (
 func TimeLayout(format string) string {
 	var layouts = map[string]string{
 		"YYYY": TimeLayoutYear,
-		"YY":   TimeLayoutYearSimple,
 		"MM":   TimeLayoutMonth,
 		"DD":   TimeLayoutDay,
 		"hh":   TimeLayoutHour,
