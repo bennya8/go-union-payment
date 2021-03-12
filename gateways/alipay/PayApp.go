@@ -10,9 +10,7 @@ type PayApp struct {
 }
 
 func (a PayApp) Request(params map[string]string) *payloads.UnionPaymentResult {
-	uri := a.Base.GetFullGatewayUrl("alipay.trade.app.pay")
-
-	resp, err := a.Base.Request(uri, a.BuildParams(params))
+	resp, err := a.Base.Request("alipay.trade.app.pay", a.BuildParams(params))
 	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 

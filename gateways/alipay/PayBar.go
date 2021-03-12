@@ -11,14 +11,7 @@ type PayBar struct {
 }
 
 func (a PayBar) Request(params map[string]string) *payloads.UnionPaymentResult {
-	uri := a.Base.GetFullGatewayUrl("alipay.trade.pay")
-
-	err := a.CheckParams(params)
-	if err != nil {
-		return payloads.NewUnionPaymentResult(false, fmt.Sprintf("%s", err), nil)
-	}
-
-	resp, err := a.Base.Request(uri, a.BuildParams(params))
+	resp, err := a.Base.Request("alipay.trade.pay", a.BuildParams(params))
 	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 

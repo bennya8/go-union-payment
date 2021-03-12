@@ -10,9 +10,7 @@ type PayQr struct {
 }
 
 func (a PayQr) Request(params map[string]string) *payloads.UnionPaymentResult {
-	uri := a.Base.GetFullGatewayUrl("alipay.trade.precreate")
-
-	resp, err := a.Base.Request(uri, a.BuildParams(params))
+	resp, err := a.Base.Request("alipay.trade.precreate", a.BuildParams(params))
 	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 

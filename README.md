@@ -58,10 +58,11 @@ UnionPayment 是一个整合各种第三方支付网关的工具, 计划支持 W
 
 | API | 完成状态 | 官网文档地址 |
 | --- | --- | --- |
-| AliApiPayApp | 🕓 | |
-| AliApiPayWap | 🕓 | |
-| AliApiPayBar | 🕓 | |
-| AliApiPayWeb | 🕓 | |
+| AliApiPayApp | ✅ | app支付接口2.0 https://opendocs.alipay.com/apis/api_1/alipay.trade.app.pay |
+| AliApiPayBar | ✅ | （二维码或条码）统一收单交易支付接口 https://opendocs.alipay.com/apis/api_1/alipay.trade.pay |
+| AliApiPayQr | ✅ | （二维码）统一收单线下交易预创建 https://opendocs.alipay.com/apis/api_1/alipay.trade.precreate |
+| AliApiPayWap | ✅ | 手机网站支付接口2.0 https://opendocs.alipay.com/apis/api_1/alipay.trade.wap.pay |
+| AliApiPayWeb | ✅ | PC网站支付 https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay?scene=API002020081300013629 |
 
 #### QQ钱包 API
 
