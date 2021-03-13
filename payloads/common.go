@@ -31,7 +31,7 @@ const (
 	WxApiPayQr                        = "wx_api_pay_qr"        // 统一下单-QR https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1
 	WxApiPayBar                       = "wx_api_pay_bar"       // 统一下单-NATIVE https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1
 	WxApiCloseTrade                   = "wx_api_close_trade"   // 关闭订单 (App\Wap\Lite\Qr\Bar） https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_3
-	WxApiQueryTrade                   = "wx_api_query_trader"  // 查询订单 (App\Wap\Lite\Qr\Bar） https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+	WxApiQueryTrade                   = "wx_api_query_trade"   // 查询订单 (App\Wap\Lite\Qr\Bar） https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
 	WxApiCancelTrade                  = "wx_api_cancel_trade"  // 撤销订单（Bar）https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_11&index=3
 	WxApiRefund                       = "wx_api_refund"        // 申请退款 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
 	WxApiQueryRefund                  = "wx_api_query_refund"  // 查询退款 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_5
@@ -66,6 +66,7 @@ const (
 	QpayApiPayPub      = "qpay_api_pay_pub" // 统一下单-公众号支付 https://qpay.qq.com/buss/wiki/38/1203
 	QpayApiPayQr       = "qpay_api_pay_qr"  // 统一下单-扫码支付 https://qpay.qq.com/buss/wiki/38/1203
 	QpayApiPayBar      = "qpay_api_pay_bar" // 付款码支付 https://qpay.qq.com/buss/wiki/1/1122
+	QpayApiQueryTrade  = "qpay_api_query_trade"
 	QpayApiRefund      = "qpay_api_refund"
 	QpayApiQueryRefund = "qpay_api_query_refund"
 

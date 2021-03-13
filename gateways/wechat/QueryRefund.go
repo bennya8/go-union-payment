@@ -9,14 +9,14 @@ import (
  * @package gateway.wechat
  * @author  : Benny
  * @email   : benny_a8@qq.com
- * @date    : 2021/03/13
+ * @created : 2021/03/13
  **/
-type Refund struct {
+type QueryRefund struct {
 	Base *Base
 }
 
-func (w Refund) Request(params map[string]string) *payloads.UnionPaymentResult {
-	uri := w.Base.GetFullGatewayUrl("secapi/pay/refund")
+func (w QueryRefund) Request(params map[string]string) *payloads.UnionPaymentResult {
+	uri := w.Base.GetFullGatewayUrl("pay/refundquery")
 
 	//api
 
@@ -24,9 +24,12 @@ func (w Refund) Request(params map[string]string) *payloads.UnionPaymentResult {
 	return payloads.NewUnionPaymentResult(err == nil, fmt.Sprintf("%s", err), resp)
 }
 
-func (w Refund) BuildParams(params map[string]string) map[string]string {
+func (w QueryRefund) BuildParams(params map[string]string) map[string]string {
 	ret := map[string]string{
+		"out_trade_no": params["trade_no"],
 	}
-	// @todo
+	for k, v := range params {
+		ret[k] = v
+	}
 	return ret
 }

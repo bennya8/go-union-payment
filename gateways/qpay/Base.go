@@ -11,10 +11,22 @@ type Gateway struct {
 
 func (a *Gateway) Request(api payloads.UnionPaymentApi, params map[string]string) *payloads.UnionPaymentResult {
 	switch api {
+	// pay apis
 	case payloads.QpayApiPayApp:
+		return (&PayApp{Base: a.Base}).Request(params)
 	case payloads.QpayApiPayBar:
+		return (&PayBar{Base: a.Base}).Request(params)
 	case payloads.QpayApiPayPub:
+		return (&PayPub{Base: a.Base}).Request(params)
 	case payloads.QpayApiPayQr:
+		return (&PayApp{Base: a.Base}).Request(params)
+	case payloads.QpayApiQueryTrade:
+		return (&QueryTrade{Base: a.Base}).Request(params)
+	// refund apis
+	case payloads.QpayApiRefund:
+		return (&Refund{Base: a.Base}).Request(params)
+	case payloads.QpayApiQueryRefund:
+		return (&QueryRefund{Base: a.Base}).Request(params)
 	}
 	return payloads.NewUnionPaymentResult(false, "unknown gateway api", nil)
 }
